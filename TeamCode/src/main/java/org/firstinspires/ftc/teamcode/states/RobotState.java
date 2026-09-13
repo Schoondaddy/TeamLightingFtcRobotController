@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.states;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public abstract class RobotState {
     private RobotState nextState = this;
-    protected final ElapsedTime stateTimer = new ElapsedTime();
+    public final ElapsedTime stateTimer = new ElapsedTime();
     public RobotState() {}
 
     public abstract void onStateStart();
