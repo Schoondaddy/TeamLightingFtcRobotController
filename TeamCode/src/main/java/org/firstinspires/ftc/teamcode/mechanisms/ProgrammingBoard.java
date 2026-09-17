@@ -14,6 +14,9 @@ public class ProgrammingBoard {
         blMotor = hwMap.get(DcMotor.class, "blmotor");
         brMotor = hwMap.get(DcMotor.class, "brmotor");
         flMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        blMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        brMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void setAllMotorSpeed(double speed) {
