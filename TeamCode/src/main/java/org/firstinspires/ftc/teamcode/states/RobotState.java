@@ -6,11 +6,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.mechanisms.ProgrammingBoard;
 
 public abstract class RobotState {
-<<<<<<< Updated upstream
     private RobotState nextState = this;
     public final ElapsedTime stateTimer = new ElapsedTime();
     public RobotState() {}
-=======
+
     protected RobotState nextState = this;
     protected final ProgrammingBoard board;
     protected final Gamepad gamepad1;
@@ -21,7 +20,6 @@ public abstract class RobotState {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
     }
->>>>>>> Stashed changes
 
     public abstract void onStateStart();
     public abstract void onStateEnd();
