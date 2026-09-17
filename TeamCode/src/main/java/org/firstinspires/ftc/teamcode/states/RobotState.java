@@ -6,15 +6,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.mechanisms.ProgrammingBoard;
 
 public abstract class RobotState {
-    private RobotState nextState = this;
     public final ElapsedTime stateTimer = new ElapsedTime();
     public RobotState() {}
 
     protected RobotState nextState = this;
-    protected final ProgrammingBoard board;
-    protected final Gamepad gamepad1;
-    protected final Gamepad gamepad2;
-    public final ElapsedTime stateTimer = new ElapsedTime();
+    protected ProgrammingBoard board;
+    protected Gamepad gamepad1;
+    protected Gamepad gamepad2;
     public RobotState(ProgrammingBoard board, Gamepad gamepad1, Gamepad gamepad2) {
         this.board = board;
         this.gamepad1 = gamepad1;
