@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.states;
+
 public class ExampleState extends RobotState {
-    public ExampleState() {}
+
+
+    public ExampleState() {
+    }
 
     @Override
     public void onStateStart() {
@@ -8,13 +12,9 @@ public class ExampleState extends RobotState {
 
     @Override
     public void onStateLoop() {
-        if (stateTimer.seconds() > 10) {
-            transitionState(new ExampleState2());
-        }
     }
 
     @Override
     public void onStateEnd() {
-
     }
 }
