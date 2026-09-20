@@ -1,7 +1,12 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.states;
 
-public class ExampleState extends RobotState {
-    public ExampleState() {}
+import org.firstinspires.ftc.teamcode.mechanisms.TestBoard;
+
+public class ExampleState extends RobotState<TestBoard> {
+
+
+    public ExampleState() {
+    }
 
     @Override
     public void onStateStart() {
