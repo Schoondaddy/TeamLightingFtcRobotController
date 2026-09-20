@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 
-public class TestProgrammingBoard extends ProgrammingBoard {
+public class TestBoard implements ProgrammingBoard {
     private Servo servo;
     private DigitalChannel touchSensor;
     private DcMotor motor;

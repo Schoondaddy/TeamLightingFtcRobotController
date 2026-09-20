@@ -7,15 +7,15 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanisms.ProgrammingBoard;
 
 
-public abstract class RobotState {
-    protected RobotState nextState = this;
+public abstract class RobotState<B extends ProgrammingBoard>{
+    protected RobotState<B> nextState = this;
     protected Gamepad gamepad1;
     protected Gamepad gamepad2;
-    protected ProgrammingBoard board;
+    protected B board;
     protected Telemetry telemetry;
     public final ElapsedTime stateTimer = new ElapsedTime();
 
-    public void initializeState(Telemetry telemetry, ProgrammingBoard board, Gamepad gamepad1, Gamepad gamepad2) {
+    public void initializeState(Telemetry telemetry, B board, Gamepad gamepad1, Gamepad gamepad2) {
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
         this.board = board;
@@ -25,11 +25,11 @@ public abstract class RobotState {
     public abstract void onStateEnd();
     public abstract void onStateLoop();
 
-    protected void transitionState(RobotState newState) {
+    protected void transitionState(RobotState<B> newState) {
         this.nextState = newState;
     }
 
-    public RobotState getNextState() {
+    public RobotState<B> getNextState() {
         return nextState;
     }
 }

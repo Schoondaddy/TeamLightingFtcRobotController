@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+public interface ProgrammingBoard {
+     void loop();
 
-
-public abstract class ProgrammingBoard {
-    public abstract void loop();
-
-    public abstract void init(HardwareMap hwMap);
+     void init(HardwareMap hwMap);
 }
