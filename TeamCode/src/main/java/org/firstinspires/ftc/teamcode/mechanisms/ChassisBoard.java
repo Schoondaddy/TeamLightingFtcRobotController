@@ -19,15 +19,20 @@ public class ChassisBoard implements ProgrammingBoard {
     public void init(HardwareMap hwMap) {
         voltageSensor = hwMap.get(VoltageSensor.class, "Control Hub");
         voltageTimer = new ElapsedTime();
-        flMotor = hwMap.get(DcMotor.class, "fl-motor");
-        frMotor = hwMap.get(DcMotor.class, "fl-motor");
-        blMotor = hwMap.get(DcMotor.class, "fl-motor");
-        brMotor = hwMap.get(DcMotor.class, "fl-motor");
+        flMotor = hwMap.get(DcMotor.class, "fl_motor");
+        frMotor = hwMap.get(DcMotor.class, "fr_motor");
+        blMotor = hwMap.get(DcMotor.class, "bl_motor");
+        brMotor = hwMap.get(DcMotor.class, "br_motor");
 
         flMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         blMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         brMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        flMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        blMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        brMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
     @Override

@@ -17,6 +17,7 @@ public class ChassisControl extends DriverControl<ChassisBoard> {
         this.telemetry = telemetry;
         slowMode = false;
         slowModeMult = 0.33;
+        nominalVoltage = 12.0;
     }
     @Override
     public void loop() {
@@ -39,7 +40,10 @@ public class ChassisControl extends DriverControl<ChassisBoard> {
         double frPower = axial - lateral - yaw;
         double blPower = axial - lateral + yaw;
         double brPower = axial + lateral - yaw;
+
+
         double max = multiAbsMax(flPower, frPower, blPower, brPower);
+        /*
         if (max  > 1.0) {
             flPower /= max;
             frPower /= max;
@@ -51,6 +55,8 @@ public class ChassisControl extends DriverControl<ChassisBoard> {
         frPower = voltageClamp(frPower);
         blPower = voltageClamp(blPower);
         brPower = voltageClamp(brPower);
+        */
+
 
         if (slowMode) {
             flPower *= slowModeMult;
@@ -59,12 +65,16 @@ public class ChassisControl extends DriverControl<ChassisBoard> {
             brPower *= slowModeMult;
         }
 
+
         board.setFlMotorPower(flPower);
         board.setFrMotorPower(frPower);
         board.setBlMotorPower(blPower);
         board.setBrMotorPower(brPower);
 
+
+
         telemetry.addData("Front left/Right", "%4.2f, %4.2f", flPower, frPower);
         telemetry.addData("Back  left/Right", "%4.2f, %4.2f", blPower, brPower);
+        telemetry.addData("Voltage", board.getCachedVoltage());
     }
 }
