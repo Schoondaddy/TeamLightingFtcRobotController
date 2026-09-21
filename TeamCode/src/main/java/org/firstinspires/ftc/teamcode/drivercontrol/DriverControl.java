@@ -37,7 +37,7 @@ public abstract class DriverControl<B extends ProgrammingBoard> {
     }
     protected double voltageClamp(double value) {
         double compFactor = nominalVoltage / currentVoltage;
-        return Math.min(1.0, Math.max(-1.0, value));
+        return Math.min(1.0, Math.max(-1.0, compFactor * value));
     }
     protected double cubicScale(double value) {
         return value * value * value;
