@@ -7,16 +7,16 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drivercontrol.ChassisControl;
 import org.firstinspires.ftc.teamcode.drivercontrol.DriverControl;
-import org.firstinspires.ftc.teamcode.mechanisms.BaseChassisBoard;
+import org.firstinspires.ftc.teamcode.mechanisms.ChassisBoard;
 
 @TeleOp
-public class ChassisDriveTeleOp extends OpMode {
-    BaseChassisBoard board;
-    DriverControl<BaseChassisBoard> dc;
+public class ChassisTeleOp extends OpMode {
+    ChassisBoard board;
+    DriverControl<ChassisBoard> dc;
     public ElapsedTime matchTimer;
     @Override
     public void init() {
-        board = new BaseChassisBoard();
+        board = new ChassisBoard();
         board.init(hardwareMap);
         //this is just bare-bones driver control, so no states needed.
         matchTimer = new ElapsedTime();

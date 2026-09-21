@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
-public class BaseChassisBoard implements ProgrammingBoard {
+public class ChassisBoard implements ProgrammingBoard {
     private DcMotor flMotor;
     private DcMotor frMotor;
     private DcMotor blMotor;

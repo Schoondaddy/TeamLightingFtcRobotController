@@ -2,15 +2,15 @@ package org.firstinspires.ftc.teamcode.drivercontrol;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;import org.firstinspires.ftc.teamcode.mechanisms.BaseChassisBoard;
+import org.firstinspires.ftc.robotcore.external.Telemetry;import org.firstinspires.ftc.teamcode.mechanisms.ChassisBoard;
 
 
-public class ChassisControl extends DriverControl<BaseChassisBoard> {
+public class ChassisControl extends DriverControl<ChassisBoard> {
     private boolean slowMode;
     private double slowModeMult;
 
     @Override
-    public void init(Telemetry telemetry, BaseChassisBoard board, Gamepad gamepad1, Gamepad gamepad2) {
+    public void init(Telemetry telemetry, ChassisBoard board, Gamepad gamepad1, Gamepad gamepad2) {
         this.board = board;
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
