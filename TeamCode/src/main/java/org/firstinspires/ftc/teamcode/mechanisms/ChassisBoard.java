@@ -7,11 +7,37 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 public class ChassisBoard implements ProgrammingBoard {
-    private DcMotor flMotor;
-    private DcMotor frMotor;
-    private DcMotor blMotor;
-    private DcMotor brMotor;
-    private DcMotor[] motors;
+    private static class MotorWrapper {
+        private final DcMotor motor;
+        private double cachedPower;
+        private double prevCachedPower;
+
+        MotorWrapper(DcMotor motor) {
+            this.motor = motor;
+        }
+
+        private void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior behavior) {
+            motor.setZeroPowerBehavior(behavior);
+        }
+
+        private void setDirection(DcMotorSimple.Direction direction) {
+            motor.setDirection(direction);
+        }
+        private void cachePower(double power) {
+            prevCachedPower = cachedPower;
+            cachedPower = power;
+        }
+        private void write() {
+            if (cachedPower != prevCachedPower) {
+                motor.setPower(cachedPower);
+            }
+        }
+    }
+    private MotorWrapper flMotor;
+    private MotorWrapper frMotor;
+    private MotorWrapper blMotor;
+    private MotorWrapper brMotor;
+    private MotorWrapper[] motors;
     private ElapsedTime voltageTimer;
     private VoltageSensor voltageSensor;
     private double cachedVoltage = 12;
@@ -19,11 +45,13 @@ public class ChassisBoard implements ProgrammingBoard {
     public void init(HardwareMap hwMap) {
         voltageSensor = hwMap.get(VoltageSensor.class, "Control Hub");
         voltageTimer = new ElapsedTime();
-        flMotor = hwMap.get(DcMotor.class, "fl_motor");
-        frMotor = hwMap.get(DcMotor.class, "fr_motor");
-        blMotor = hwMap.get(DcMotor.class, "bl_motor");
-        brMotor = hwMap.get(DcMotor.class, "br_motor");
 
+        flMotor = new MotorWrapper(hwMap.get(DcMotor.class, "fl_motor"));
+        frMotor = new MotorWrapper(hwMap.get(DcMotor.class, "fr_motor"));
+        blMotor = new MotorWrapper(hwMap.get(DcMotor.class, "bl_motor"));
+        brMotor = new MotorWrapper(hwMap.get(DcMotor.class, "br_motor"));
+
+        motors = new MotorWrapper[] {flMotor, frMotor, blMotor, brMotor};
         flMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         blMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -33,28 +61,34 @@ public class ChassisBoard implements ProgrammingBoard {
         frMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         blMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         brMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
     }
     @Override
-    public void loop() {
+    public void readLoop() {
         if (voltageTimer.seconds() > 0.05) {
             cachedVoltage = voltageSensor.getVoltage();
         }
     }
-
-    public void setFlMotorPower(double power) {
-        flMotor.setPower(power);
-    }
-    public void setFrMotorPower(double power) {
-        frMotor.setPower(power);
-    }
-    public void setBlMotorPower(double power) {
-        blMotor.setPower(power);
-    }
-    public void setBrMotorPower(double power) {
-        brMotor.setPower(power);
+    @Override
+    public void writeLoop() {
+        for (MotorWrapper motor : motors) {
+            motor.write();
+        }
     }
     public double getCachedVoltage() {
         return cachedVoltage;
+    }
+    public void setFlMotorPower(double power) {
+        flMotor.cachePower(power);
+    }
+    public void setFrMotorPower(double power) {
+        frMotor.cachePower(power);
+    }
+
+    public void setBlMotorPower(double power) {
+        blMotor.cachePower(power);
+    }
+
+    public void setBrMotorPower(double power ) {
+        brMotor.cachePower(power);
     }
 }

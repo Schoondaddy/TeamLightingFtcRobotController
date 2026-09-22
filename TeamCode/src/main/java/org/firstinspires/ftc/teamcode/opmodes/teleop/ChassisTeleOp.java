@@ -26,7 +26,8 @@ public class ChassisTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        board.loop();
+        board.readLoop();
         dc.loop();
+        board.writeLoop();
     }
 }

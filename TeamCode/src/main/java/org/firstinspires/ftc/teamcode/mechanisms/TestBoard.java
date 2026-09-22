@@ -18,10 +18,13 @@ public class TestBoard implements ProgrammingBoard {
     private boolean touchSensorPressed;
 
     @Override
-    public void loop() {
+    public void readLoop() {
         prevTouchSensorPressed = touchSensorPressed;
         touchSensorPressed = !touchSensor.getState();
     }
+
+    @Override
+    public void writeLoop() {}
 
     @Override
     public void init(HardwareMap hwMap) {

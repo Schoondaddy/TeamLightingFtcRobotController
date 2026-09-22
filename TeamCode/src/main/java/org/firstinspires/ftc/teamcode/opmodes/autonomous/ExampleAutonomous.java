@@ -25,7 +25,8 @@ public class ExampleAutonomous extends OpMode {
 
     @Override
     public void loop() {
-        board.loop();
+        board.readLoop();
         sm.loop();
+        board.writeLoop();
     }
 }
