@@ -6,92 +6,35 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;import org.firstinspir
 
 
 /**
- * Driver Control is an abstract class for the classes that handle driver input logic
- * @param <B> The implementation of interface ProgrammingBoard which is used by subclasses of DriverControl
+ * Abstract class for  classes that handle driver input logic
+ * @param <B> The implementation of interface {@link ProgrammingBoard} which is used by subclasses of DriverControl
  */
 public abstract class DriverControl<B extends ProgrammingBoard> {
     /** FTC telemetry interface used to send data to the Driver Station */
     protected Telemetry telemetry;
     /** Robot hardware used by a DriverControl subclass */
     protected B board;
+
     /** First driver gamepad */
     protected Gamepad gamepad1;
     /** Second driver gamepad */
     protected Gamepad gamepad2;
-    /** The nominal, expected voltage */
 
 
-    /**
-     * Compares a value, typically a stick input, to a deadzone to filter unintended inputs/
+
+    /** Initializes driver control, including telemetry, robot hardware, and gamepads
      *
-     * @param value The input value to test
-     * @param deadzone The threshold below which the input is considered noise.
-     * @return {@code 0.0} if the value is below the deadzone; otherwise the original value.
-     */
-    protected double applyDeadzone(double value, double deadzone) {
-        if (Math.abs(value) > deadzone) {
-            return value;
-        }
-        return 0.0;
-    }
-
-    /**
+     * <p>This method should be called from the OpMode's {@link com.qualcomm.robotcore.eventloop.opmode.OpMode#init() init() method}</p>
      *
-     * @param value
-     * @return
-     */
-    protected double quadraticScale(double value) {
-        return Math.signum(value) * value * value;
-    }
-
-    /**
-     *
-     * @param values
-     * @return
-     */
-    protected double multiMax(double...values) {
-        double max = 0.0;
-        for (double value : values) {
-            max = Math.max(max, value);
-        }
-        return max;
-    }
-
-    /**
-     *
-     * @param values
-     * @return
-     */
-    protected double multiAbsMax(double...values) {
-        double[] absValues = values.clone();
-        for (int i = 0; i < absValues.length; i++) {
-            absValues[i] = Math.abs(absValues[i]);
-        }
-        return multiMax(absValues);
-    }
-
-
-
-    /**
-     *
-     * @param value
-     * @return
-     */
-    protected double cubicScale(double value) {
-        return value * value * value;
-    }
-
-    /**
-     *
-     * @param telemetry
-     * @param board
-     * @param gamepad1
-     * @param gamepad2
+     * @param telemetry FTC telemetry interface used to send data to the Driver Station
+     * @param board robot hardware used by a DriverControl subclass
+     * @param gamepad1 first driver gamepad
+     * @param gamepad2 second driver gamepad
      */
     public abstract void init(Telemetry telemetry, B board, Gamepad gamepad1, Gamepad gamepad2);
 
-    /**
-     *
+    /**Executes an iteration of the DriverControl loop.
+     * <p>This method should be called from the OpMode's {@link com.qualcomm.robotcore.eventloop.opmode.OpMode#loop() loop() method}</p>
      */
     public abstract void loop();
 }

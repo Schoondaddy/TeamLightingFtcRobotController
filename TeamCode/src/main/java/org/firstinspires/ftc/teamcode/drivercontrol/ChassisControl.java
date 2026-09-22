@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.drivercontrol;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
-
+import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.quadraticScale;
+import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.applyDeadzone;
+import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.multiAbsMax;
 import org.firstinspires.ftc.robotcore.external.Telemetry;import org.firstinspires.ftc.teamcode.mechanisms.ChassisBoard;
 
 
