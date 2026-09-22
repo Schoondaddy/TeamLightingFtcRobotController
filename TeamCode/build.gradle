@@ -27,3 +27,29 @@ android {
 dependencies {
     implementation project(':FtcRobotController')
 }
+
+
+tasks.register('teamCodeJavadoc', Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+
+    classpath = files(
+            android.getBootClasspath(),
+            android.sourceSets.main.java.srcDirs
+    )
+
+    destinationDir = layout.buildDirectory
+            .dir("docs/javadoc")
+            .get()
+            .asFile
+
+    exclude('org/firstinspires/ftc/teamcode/internal/**')
+
+    options {
+        encoding = 'UTF-8'
+        charSet = 'UTF-8'
+        docEncoding = 'UTF-8'
+        memberLevel = JavadocMemberLevel.PROTECTED
+    }
+
+    failOnError = false
+}
