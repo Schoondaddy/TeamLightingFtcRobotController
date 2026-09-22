@@ -43,7 +43,7 @@ public class ChassisControl extends DriverControl<ChassisBoard> {
 
 
         double max = multiAbsMax(flPower, frPower, blPower, brPower);
-        /*
+
         if (max  > 1.0) {
             flPower /= max;
             frPower /= max;
@@ -55,7 +55,7 @@ public class ChassisControl extends DriverControl<ChassisBoard> {
         frPower = voltageClamp(frPower);
         blPower = voltageClamp(blPower);
         brPower = voltageClamp(brPower);
-        */
+
 
 
         if (slowMode) {
