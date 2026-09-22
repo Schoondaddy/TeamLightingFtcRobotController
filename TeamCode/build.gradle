@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+import org.gradle.api.attributes.Attribute
 //
 // build.gradle in TeamCode
 //
@@ -20,6 +20,9 @@ android {
     namespace = 'org.firstinspires.ftc.teamcode'
 
     packagingOptions {
+        jniLibs {
+            pickFirsts += ['**/*.so']
+        }
         jniLibs.useLegacyPackaging true
     }
 }
@@ -27,29 +30,32 @@ android {
 dependencies {
     implementation project(':FtcRobotController')
 }
+import org.gradle.api.attributes.Attribute
 
+tasks.register('javadoc', Javadoc) {
+    description = "Generates Javadoc for TeamCode"
+    group = "documentation"
 
-tasks.register('teamCodeJavadoc', Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
+    source = fileTree(dir: 'src/main/java', include: '**/*.java', exclude: '**/internal/**')
+    destinationDir = file("$projectDir/javadoc")
 
-    classpath = files(
-            android.getBootClasspath(),
-            android.sourceSets.main.java.srcDirs
-    )
+    doFirst {
+        def artifactType = Attribute.of('artifactType', String)
+        def compileClasspathFiles = project.configurations.named("debugCompileClasspath").get()
+                .incoming.artifactView {
+            attributes {
+                attribute(artifactType, 'jar')
+            }
+            lenient(true)
+        }.files
 
-    destinationDir = layout.buildDirectory
-            .dir("docs/javadoc")
-            .get()
-            .asFile
-
-    exclude('org/firstinspires/ftc/teamcode/internal/**')
-
-    options {
-        encoding = 'UTF-8'
-        charSet = 'UTF-8'
-        docEncoding = 'UTF-8'
-        memberLevel = JavadocMemberLevel.PROTECTED
+        classpath = project.objects.fileCollection().from(
+                android.getBootClasspath(),
+                compileClasspathFiles
+        )
     }
 
-    failOnError = false
+    failOnError false
+    options.encoding = "UTF-8"
+    options.addStringOption('Xdoclint:none', '-quiet')
 }
