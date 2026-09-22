@@ -8,7 +8,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;import org.firstinspir
 public class ChassisControl extends DriverControl<ChassisBoard> {
     private boolean slowMode;
     private double slowModeMult;
-
+    private double nominalVoltage;
+    private double currentVoltage;
     @Override
     public void init(Telemetry telemetry, ChassisBoard board, Gamepad gamepad1, Gamepad gamepad2) {
         this.board = board;
@@ -22,19 +23,18 @@ public class ChassisControl extends DriverControl<ChassisBoard> {
     @Override
     public void loop() {
         currentVoltage = board.getCachedVoltage();
-        final double DEADZONE = .05;
 
         if (gamepad1.aWasPressed()) {
             slowMode = !slowMode;
         }
 
-        handleDrivetrain(DEADZONE);
+        handleDrivetrain();
     }
-    private void handleDrivetrain(final double DEADZONE) {
+    private void handleDrivetrain() {
         currentVoltage = board.getCachedVoltage();
-        double axial = -quadraticScale(applyDeadzone(gamepad1.left_stick_y, DEADZONE));
-        double lateral = quadraticScale(applyDeadzone(gamepad1.left_stick_x, DEADZONE));
-        double yaw = quadraticScale(applyDeadzone(gamepad1.right_stick_x, DEADZONE));
+        double axial = -quadraticScale(applyDeadzone(gamepad1.left_stick_y, 0.05));
+        double lateral = quadraticScale(applyDeadzone(gamepad1.left_stick_x, 0.05));
+        double yaw = quadraticScale(applyDeadzone(gamepad1.right_stick_x, 0.05));
 
         double flPower = axial + lateral + yaw;
         double frPower = axial - lateral - yaw;
@@ -76,5 +76,10 @@ public class ChassisControl extends DriverControl<ChassisBoard> {
         telemetry.addData("Front left/Right", "%4.2f, %4.2f", flPower, frPower);
         telemetry.addData("Back  left/Right", "%4.2f, %4.2f", blPower, brPower);
         telemetry.addData("Voltage", board.getCachedVoltage());
+    }
+
+    private double voltageClamp(double value) {
+        double compFactor = nominalVoltage / currentVoltage;
+        return Math.min(1.0, Math.max(-1.0, compFactor * value));
     }
 }
