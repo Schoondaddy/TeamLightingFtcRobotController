@@ -12,8 +12,11 @@ import org.firstinspires.ftc.teamcode.states.StateMachine;
 @Disabled
 @Autonomous()
 public class ExampleAutonomous extends OpMode {
+    /** The hardware the Autonomous uses */
     TestBoard board;
+    /** The state machine */
     StateMachine<TestBoard> sm;
+    /** The time that has elapsed during the match */
     public ElapsedTime matchTimer;
 
     @Override

@@ -11,8 +11,11 @@ import org.firstinspires.ftc.teamcode.mechanisms.ChassisBoard;
 
 @TeleOp
 public class ChassisTeleOp extends OpMode {
+    /** The hardware the TeleOp uses */
     ChassisBoard board;
+    /** The driver control logic fed the programming board */
     DriverControl<ChassisBoard> dc;
+    /** The time that has elapsed during the match */
     public ElapsedTime matchTimer;
     @Override
     public void init() {
