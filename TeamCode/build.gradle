@@ -50,7 +50,7 @@ tasks.register('javadoc', Javadoc) {
         }.files
 
         classpath = project.objects.fileCollection().from(
-                android.getBootClasspath(),
+                project.extensions.findByName("androidComponents").sdkComponents.bootClasspath,
                 compileClasspathFiles
         )
     }
