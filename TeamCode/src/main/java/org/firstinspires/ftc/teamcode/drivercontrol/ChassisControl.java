@@ -7,12 +7,18 @@ import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.multiAbs
 import org.firstinspires.ftc.robotcore.external.Telemetry;import org.firstinspires.ftc.teamcode.mechanisms.ChassisBoard;
 
 
+/** Handles driver input for the ChassisTeleOp TeleOp, which is used for a robot that is purely the chassis*/
 public class ChassisControl extends DriverControl<ChassisBoard> {
+    /** Toggles Slow Mode */
     private boolean slowMode;
-    private double slowModeMult;
+    /** The mult applied to motor power when Slow Mode is toggled */
+    private  double slowModeMult;
+    /** The theoretical voltage the robot should have */
     private double nominalVoltage;
+    /** The actual voltage the robot has */
     private double currentVoltage;
     @Override
+
     public void init(Telemetry telemetry, ChassisBoard board, Gamepad gamepad1, Gamepad gamepad2) {
         this.board = board;
         this.gamepad1 = gamepad1;
@@ -21,6 +27,7 @@ public class ChassisControl extends DriverControl<ChassisBoard> {
         slowMode = false;
         slowModeMult = 0.33;
         nominalVoltage = 12.0;
+        currentVoltage = nominalVoltage;
     }
     @Override
     public void loop() {
@@ -32,6 +39,12 @@ public class ChassisControl extends DriverControl<ChassisBoard> {
 
         handleDrivetrain();
     }
+
+    /**
+     * Helper method used to handle the drive train and its logic
+     * <p>Applies a deadzone to input, quadratically scales input, compensates for voltage,
+     * normalizes motors, and applies Slow Mode </p>
+     */
     private void handleDrivetrain() {
         currentVoltage = board.getCachedVoltage();
         double axial = -quadraticScale(applyDeadzone(gamepad1.left_stick_y, 0.05));
@@ -80,6 +93,11 @@ public class ChassisControl extends DriverControl<ChassisBoard> {
         telemetry.addData("Voltage", board.getCachedVoltage());
     }
 
+    /** Adjusts for voltage, scaling up power if voltage is below the norm, scaling down if above
+     *
+     * @param value an input, typically within {@code [-1, -1]}
+     * @return returns the scaled and clamped value
+     */
     private double voltageClamp(double value) {
         double compFactor = nominalVoltage / currentVoltage;
         return Math.min(1.0, Math.max(-1.0, compFactor * value));
