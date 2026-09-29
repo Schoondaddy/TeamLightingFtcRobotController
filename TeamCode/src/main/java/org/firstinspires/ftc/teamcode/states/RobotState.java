@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.ProgrammingBoard;
 
 
 public abstract class RobotState<B extends ProgrammingBoard>{
+    public StateCategory stateCategory;
     /** The state that will run in the next loop iteration; is the current state when not transitioning states */
     protected RobotState<B> nextState = this;
     /** First driver gamepad*/
@@ -22,7 +23,13 @@ public abstract class RobotState<B extends ProgrammingBoard>{
      *  <p>Starts tracking time the loop BEFORE the state's first loop</p>
      * */
     public final ElapsedTime stateTimer = new ElapsedTime();
+    public RobotState(StateCategory stateCategory) {
+        this.stateCategory = stateCategory;
+    }
 
+    public RobotState() {
+        this.stateCategory = StateCategory.NONE;
+    }
     /** Called  to initialize the current state's member variables*/
     public void initializeState(Telemetry telemetry, B board, Gamepad gamepad1, Gamepad gamepad2) {
         this.gamepad1 = gamepad1;

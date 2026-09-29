@@ -16,12 +16,13 @@ public class StateMachine<B extends ProgrammingBoard> {
     private final Gamepad gamepad2;
     /** The current active state*/
     private RobotState<B> currentState;
-
-    public StateMachine (Telemetry telemetry, B board, Gamepad gamepad1, Gamepad gamepad2) {
+    private final StateCategory stateCategory;
+    public StateMachine (Telemetry telemetry, B board, Gamepad gamepad1, Gamepad gamepad2, StateCategory category) {
         this.telemetry = telemetry;
         this.board = board;
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
+        this.stateCategory = category;
     }
 
     /** Initializes the state machine, along with the initial state

@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 import org.firstinspires.ftc.teamcode.mechanisms.TestBoard;
+import org.firstinspires.ftc.teamcode.states.StateCategory;
 import org.firstinspires.ftc.teamcode.states.StateMachine;
 
 @Disabled
@@ -23,7 +24,7 @@ public class ExampleAutonomous extends OpMode {
     public void init() {
         board = new TestBoard();
         board.init(hardwareMap);
-        sm = new StateMachine<>(telemetry, board, gamepad1, gamepad2);
+        sm = new StateMachine<>(telemetry, board, gamepad1, gamepad2, StateCategory.NONE);
     }
 
     @Override
