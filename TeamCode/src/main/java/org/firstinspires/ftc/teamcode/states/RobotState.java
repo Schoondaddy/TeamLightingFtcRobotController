@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.ProgrammingBoard;
 
 
 public abstract class RobotState<B extends ProgrammingBoard>{
-    public StateCategory stateCategory;
+    public final StateCategory stateCategory;
     /** The state that will run in the next loop iteration; is the current state when not transitioning states */
     protected RobotState<B> nextState = this;
     /** First driver gamepad*/
