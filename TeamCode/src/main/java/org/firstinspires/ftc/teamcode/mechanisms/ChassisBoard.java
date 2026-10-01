@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 public class ChassisBoard implements ProgrammingBoard {
     private static class MotorWrapper {
+        private boolean killSwitch = false;
         private final DcMotor motor;
         private double cachedPower;
         private double prevCachedPower;
@@ -90,5 +91,11 @@ public class ChassisBoard implements ProgrammingBoard {
 
     public void setBrMotorPower(double power ) {
         brMotor.cachePower(power);
+    }
+
+    public void flipKillSwitch() {
+        for (MotorWrapper motor : motors) {
+            motor.killSwitch = !motor.killSwitch;
+        }
     }
 }

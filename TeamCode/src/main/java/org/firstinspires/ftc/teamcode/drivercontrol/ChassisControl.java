@@ -38,6 +38,11 @@ public class ChassisControl extends DriverControl<ChassisBoard> {
         }
 
         handleDrivetrain();
+
+        if (gamepad1.startWasPressed()) {
+            board.flipKillSwitch();
+            gamepad1.rumbleBlips(3);
+        }
     }
 
     /**
