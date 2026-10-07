@@ -36,13 +36,15 @@ public class CSVWriter {
         } catch (IOException e) { }
     }
 
-    public static void multiListwrite(LinkedHashMap<String,List<Double>>...columns) {
+    public static void multiListwrite(LinkedHashMap<String,List<Double>> columns) {
 
         String csvFile = "numbers.csv";
         int maxSize = 0;
+        List<List<Double>> lists = new ArrayList<>(columns.values());
+
         // Determine the maximum length to avoid IndexOutOfBoundsException
-        for (int i = 0; i < lists.length - 1; i++) {
-            maxSize = Math.max(lists[i].size(), lists[i+1].size());
+        for (int i = 0; i < lists.size() - 1; i++) {
+            maxSize = Math.max(lists.get(i).size(), lists.get(i+1).size());
         }
 
 
