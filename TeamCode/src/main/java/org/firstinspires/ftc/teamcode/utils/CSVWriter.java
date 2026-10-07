@@ -5,10 +5,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class CSVWriter {
     public static void main(String[] args) {
+        LinkedHashMap<List<Double>,String> testMap = new LinkedHashMap<>();
+        testMap.put(new ArrayList<>(List.of(0.0,3.0,5.0,7.0,9.0)), "x");
+        testMap.put(new ArrayList<>(List.of(1.0,4.0,6.0,8.0,10.0)), "y");
+        testMap.put(new ArrayList<>(List.of(2.0,5.0,7.0,9.0,11.0)), "z");
+
+        multiListWrite(testMap);
         twoListWrite(new ArrayList<>(List.of(1.0,2.0,3.0,4.0)), new ArrayList<>(List.of(0.9, 2.1, 2.9, 4.05)));
     }
     public static void twoListWrite(List<Double> list1, List<Double> list2) {
@@ -36,11 +43,11 @@ public class CSVWriter {
         } catch (IOException e) { }
     }
 
-    public static void multiListwrite(LinkedHashMap<String,List<Double>> columns) {
+    public static void multiListwrite(LinkedHashMap<List<Double>,String> columns) {
 
         String csvFile = "numbers.csv";
         int maxSize = 0;
-        List<List<Double>> lists = new ArrayList<>(columns.values());
+        List<List<Double>> lists = new ArrayList<>(columns.keySet());
 
         // Determine the maximum length to avoid IndexOutOfBoundsException
         for (int i = 0; i < lists.size() - 1; i++) {
@@ -50,28 +57,33 @@ public class CSVWriter {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFile))) {
             // 1. Write the header
-            writer.write("X,Y");
+            StringBuilder sb = new StringBuilder();
+            List<String> columnHeaders = new ArrayList<>(columns.values());
+            columnHeaders = new ArrayList<>(new LinkedHashSet<>(columnHeaders));
+            for (int i = 0; i < columnHeaders.size() - 1; i++) {
+                sb.append(columnHeaders.get(i)).append(',');
+            }
+            if (sb.length() > 0) {
+                sb.deleteCharAt(sb.length() - 1);
+            }
+            writer.write(sb.toString());
+            sb.setLength(0);
             writer.newLine();
 
             // 2. Loop through and write row by row
 
             for (int i = 0; i < maxSize; i++) {
-                String toWrite = "";
-                for (int j = 0; j < lists.length; j++) {
-                    if (j == lists.length) {
-                        toWrite += (i < lists[j].size()) ? String.valueOf(lists[j].get(i)) : "";
-                    }
+                for (int j = 0; j < lists.size(); j++) {
+                    sb.append((i < lists.get(j).size()) ? String.valueOf(lists.get(j).get(i)) : "").append(',');
                 }
-
-                String val1 = (i < list1.size()) ? String.valueOf(list1.get(i)) : "";
-                String val2 = (i < list2.size()) ? String.valueOf(list2.get(i)) : "";
-
-                writer.write(val1 + "," + val2);
+                sb.deleteCharAt(sb.length()-1);
+                writer.write(sb.toString());
+                sb.setLength(0);
                 writer.newLine();
             }
 
             System.out.println("CSV successfully created!");
 
-        } catch (IOException e) { }
+        } catch (IOException e) {System.out.println();}
     }
 }
