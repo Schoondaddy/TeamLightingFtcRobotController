@@ -84,6 +84,6 @@ public class CSVWriter {
 
             System.out.println("CSV successfully created!");
 
-        } catch (IOException e) {System.out.println();}
+        } catch (IOException e) {}
     }
 }
