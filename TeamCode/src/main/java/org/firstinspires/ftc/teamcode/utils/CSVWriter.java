@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.utils;
 
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,7 +17,6 @@ public class CSVWriter {
         testMap.put(new ArrayList<>(List.of(2.0,5.0,7.0,9.0,11.0)), "z");
 
         multiListWrite(testMap);
-        twoListWrite(new ArrayList<>(List.of(1.0,2.0,3.0,4.0)), new ArrayList<>(List.of(0.9, 2.1, 2.9, 4.05)));
     }
     public static void twoListWrite(List<Double> list1, List<Double> list2) {
         String csvFile = "numbers.csv";
@@ -43,7 +43,7 @@ public class CSVWriter {
         } catch (IOException e) { }
     }
 
-    public static void multiListwrite(LinkedHashMap<List<Double>,String> columns) {
+    public static void multiListWrite(LinkedHashMap<List<Double>,String> columns) {
 
         String csvFile = "numbers.csv";
         int maxSize = 0;
@@ -60,7 +60,7 @@ public class CSVWriter {
             StringBuilder sb = new StringBuilder();
             List<String> columnHeaders = new ArrayList<>(columns.values());
             columnHeaders = new ArrayList<>(new LinkedHashSet<>(columnHeaders));
-            for (int i = 0; i < columnHeaders.size() - 1; i++) {
+            for (int i = 0; i < columnHeaders.size(); i++) {
                 sb.append(columnHeaders.get(i)).append(',');
             }
             if (sb.length() > 0) {
