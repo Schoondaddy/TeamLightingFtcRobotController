@@ -9,14 +9,16 @@ public class ExampleState extends RobotState<TestBoard> {
 
     @Override
     public void onStateStart() {
+        System.out.println("This state was transitioned into!");
     }
 
     @Override
     public void onStateLoop() {
+        System.out.println("This state was active during an op-mode loop!");
     }
 
     @Override
     public void onStateEnd() {
-
+        System.out.println("This state was transitioned out of!");
     }
 }

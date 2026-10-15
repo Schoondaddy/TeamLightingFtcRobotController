@@ -58,10 +58,10 @@ public class ChassisBoard implements ProgrammingBoard {
         blMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         brMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        flMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        blMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        brMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        for (MotorWrapper motor : motors) {
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+        
     }
     @Override
     public void readLoop() {
@@ -89,7 +89,7 @@ public class ChassisBoard implements ProgrammingBoard {
         blMotor.cachePower(power);
     }
 
-    public void setBrMotorPower(double power ) {
+    public void setBrMotorPower(double power) {
         brMotor.cachePower(power);
     }
 
