@@ -61,7 +61,7 @@ public class ChassisBoard implements ProgrammingBoard {
         for (MotorWrapper motor : motors) {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
-        
+
     }
     @Override
     public void readLoop() {
@@ -78,18 +78,18 @@ public class ChassisBoard implements ProgrammingBoard {
     public double getCachedVoltage() {
         return cachedVoltage;
     }
-    public void setFlMotorPower(double power) {
+    public void cacheFlMotorPower(double power) {
         flMotor.cachePower(power);
     }
-    public void setFrMotorPower(double power) {
+    public void cacheFrMotorPower(double power) {
         frMotor.cachePower(power);
     }
 
-    public void setBlMotorPower(double power) {
+    public void cacheBlMotorPower(double power) {
         blMotor.cachePower(power);
     }
 
-    public void setBrMotorPower(double power) {
+    public void cacheBrMotorPower(double power) {
         brMotor.cachePower(power);
     }
 

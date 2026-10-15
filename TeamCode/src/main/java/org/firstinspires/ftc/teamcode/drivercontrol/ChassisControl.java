@@ -86,10 +86,10 @@ public class ChassisControl extends DriverControl<ChassisBoard> {
         }
 
 
-        board.setFlMotorPower(flPower);
-        board.setFrMotorPower(frPower);
-        board.setBlMotorPower(blPower);
-        board.setBrMotorPower(brPower);
+        board.cacheFlMotorPower(flPower);
+        board.cacheFrMotorPower(frPower);
+        board.cacheBlMotorPower(blPower);
+        board.cacheBrMotorPower(brPower);
 
 
 
