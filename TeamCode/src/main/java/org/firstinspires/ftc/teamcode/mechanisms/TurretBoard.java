@@ -46,7 +46,7 @@ public class TurretBoard implements ProgrammingBoard {
     private Servo blockerServo;
     private MotorWrapper flywheelMotor1;
     private MotorWrapper flywheelMotor2;
-    private MotorWrapper motors[];
+    private MotorWrapper[] motors;
 
     @Override public void init(HardwareMap hwMap) {
         voltageSensor = hwMap.get(VoltageSensor.class, "Control Hub");
@@ -61,7 +61,7 @@ public class TurretBoard implements ProgrammingBoard {
         flywheelMotor1 = new TurretBoard.MotorWrapper(hwMap.get(DcMotor.class, "fl_motor"));
         flywheelMotor2 = new TurretBoard.MotorWrapper(hwMap.get(DcMotor.class, "fr_motor"));
 
-        motors = new TurretBoard.MotorWrapper[] {flywheelMotor1, flywheelMotor2};
+        motors = new MotorWrapper[] {flywheelMotor1, flywheelMotor2};
         flywheelMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
         flywheelMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
     }
@@ -81,10 +81,10 @@ public class TurretBoard implements ProgrammingBoard {
     public double getCachedVoltage() {
         return cachedVoltage;
     }
-    public void setFlywheelMotor1Power(double power) {
+    public void setFlywheelMotor1Power(double power) {flywheelMotor1.cachePower(power);}
+    public void setFlywheelMotor2Power(double power) {flywheelMotor2.cachePower(power);}
+    public void setFlywheelMotorsPower(double power) {
         flywheelMotor1.cachePower(power);
-    }
-    public void setFlywheelMotor2Power(double power) {
         flywheelMotor2.cachePower(power);
     }
 }

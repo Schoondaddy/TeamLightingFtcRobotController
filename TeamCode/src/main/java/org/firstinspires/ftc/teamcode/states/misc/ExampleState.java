@@ -1,6 +1,9 @@
-package org.firstinspires.ftc.teamcode.states;
+package org.firstinspires.ftc.teamcode.states.misc;
 
 import org.firstinspires.ftc.teamcode.mechanisms.TestBoard;
+import org.firstinspires.ftc.teamcode.states.RobotState;
+import org.firstinspires.ftc.teamcode.states.StateCategory;
+
 public class ExampleState extends RobotState<TestBoard> {
     public ExampleState() { super(StateCategory.NONE); }
 
