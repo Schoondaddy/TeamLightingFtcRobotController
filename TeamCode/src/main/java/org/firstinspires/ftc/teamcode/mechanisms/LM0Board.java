@@ -94,7 +94,7 @@ public class LM0Board implements ProgrammingBoard {
         rotationServo2.setPosition(pos);
         rotationServo3.setPosition(pos);
     }
-    public void setAimServoPostion(double pos) {
+    public void setAimServoPosition(double pos) {
         aimServo.setPosition(pos);
     }
     public void setBlockerServoPosition(double pos) {
@@ -117,5 +117,11 @@ public class LM0Board implements ProgrammingBoard {
     }
     public double getFlywheelMotor2Vel() {
         return flywheelMotor2.getVelocity();
+    }
+
+    public void flipKillSwitch() {
+        for (MotorWrapper motor : motors) {
+            motor.killSwitch = !motor.killSwitch;
+        }
     }
 }
