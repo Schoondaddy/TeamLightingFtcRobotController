@@ -48,6 +48,10 @@ public class LM0Board implements ProgrammingBoard {
     private Servo blockerServo;
     private MotorWrapper intakeMotor;
     private MotorWrapper passthroughMotor;
+    private MotorWrapper flMotor;
+    private MotorWrapper frMotor;
+    private MotorWrapper blMotor;
+    private MotorWrapper brMotor;
     private DcMotorEx flywheelMotor1;
     private DcMotorEx flywheelMotor2;
     private MotorWrapper[] motors;
@@ -65,7 +69,21 @@ public class LM0Board implements ProgrammingBoard {
 
         intakeMotor = new MotorWrapper(hwMap.get(DcMotor.class, "intake_motor"));
         passthroughMotor = new MotorWrapper(hwMap.get(DcMotor.class, "passthrough_motor"));
-        motors = new MotorWrapper[] {intakeMotor, passthroughMotor};
+
+        flMotor = new MotorWrapper(hwMap.get(DcMotor.class, "fl_motor"));
+        frMotor = new MotorWrapper(hwMap.get(DcMotor.class, "fr_motor"));
+        blMotor = new MotorWrapper(hwMap.get(DcMotor.class, "bl_motor"));
+        brMotor = new MotorWrapper(hwMap.get(DcMotor.class, "br_motor"));
+
+        motors = new MotorWrapper[] {intakeMotor, passthroughMotor, flMotor, frMotor, blMotor, brMotor};
+        flMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        frMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        blMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        brMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        for (MotorWrapper motor : motors) {
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
 
         flywheelMotor1 = hwMap.get(DcMotorEx.class, "fl_motor");
         flywheelMotor2 = hwMap.get(DcMotorEx.class, "fr_motor");
@@ -88,6 +106,20 @@ public class LM0Board implements ProgrammingBoard {
     public double getCachedVoltage() {
         return cachedVoltage;
     }
+    
+    public void cacheFlMotorPower(double power) {
+        flMotor.cachePower(power);
+    }
+    public void cacheFrMotorPower(double power) {
+        frMotor.cachePower(power);
+    }
+    public void cacheBlMotorPower(double power) {
+        blMotor.cachePower(power);
+    }
+    public void cacheBrMotorPower(double power) {
+        brMotor.cachePower(power);
+    }
+
     public void setTurretRotation(double rotation) {
         double pos = rotation * (1.0/360.0);
         rotationServo1.setPosition(pos);
