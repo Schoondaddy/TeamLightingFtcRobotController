@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.multiAbs
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.quadraticScale;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanisms.ChassisBoard;
@@ -14,16 +15,18 @@ public class LM0Control extends DriverControl<LM0Board> {
     /** Toggles Slow Mode */
     private boolean slowMode;
     /**Toggles the second driver's override fast mode */
-
     private boolean fastMode;
     /** The mult applied to motor power when Slow Mode is toggled */
-    private  double slowModeMult;
+    private double slowModeMult;
+    private final double killSwitchHoldTime = 1.0;
+    private double killSwitchPressedTime = -1.0;
     /** The theoretical voltage the robot should have */
     private double nominalVoltage;
     /** The actual voltage the robot has */
     private double currentVoltage;
-    @Override
 
+    public ElapsedTime matchTimer;
+    @Override
     public void init(Telemetry telemetry, LM0Board board, Gamepad gamepad1, Gamepad gamepad2) {
         this.board = board;
         this.gamepad1 = gamepad1;
@@ -33,22 +36,43 @@ public class LM0Control extends DriverControl<LM0Board> {
         slowModeMult = 0.33;
         nominalVoltage = 12.0;
         currentVoltage = nominalVoltage;
+        matchTimer = new ElapsedTime();
     }
     @Override
     public void loop() {
         currentVoltage = board.getCachedVoltage();
 
-        if (gamepad1.aWasPressed()) {
+        if (gamepad1.yWasPressed()) { //slow mode
             slowMode = !slowMode;
         }
-
+        if (gamepad1.leftTriggerWasPressed() || gamepad1.leftTriggerWasReleased()) { //Hold mode switch
+            slowMode = !slowMode;
+        }
         handleDrivetrain();
 
-
-        if (gamepad1.startWasPressed()) {
-            board.flipKillSwitch();
-            gamepad1.rumbleBlips(3);
+        if (gamepad2.touchpad) { //Kill switch
+            if (killSwitchPressedTime == -1.0) {
+                killSwitchPressedTime = matchTimer.time();
+            }
+            else if (matchTimer.time() - killSwitchPressedTime >= killSwitchHoldTime)
+                board.flipKillSwitch();
+                gamepad1.rumbleBlips(3);
+                killSwitchPressedTime = -1.0;
+        } else if (killSwitchPressedTime != -1.0){
+            killSwitchPressedTime = -1.0;
         }
+
+        if (gamepad1.right_bumper) { //Intake
+            board.cacheIntakeMotorPower(0.5);
+        }
+
+        if (gamepad2.x){ //Outtake
+            board.cacheIntakeMotorPower(-0.5);
+        }
+        if (gamepad2.right_trigger_pressed){ //Launch
+            //waiting for launch method
+        }
+
     }
 
     /**
