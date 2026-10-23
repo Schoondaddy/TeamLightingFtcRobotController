@@ -18,8 +18,10 @@ public class LM0Control extends DriverControl<LM0Board> {
     private boolean fastMode;
     /** The mult applied to motor power when Slow Mode is toggled */
     private double slowModeMult;
-    private final double killSwitchHoldTime = 1.0;
-    private double killSwitchPressedTime = -1.0;
+    /** The amount of time (nanoseconds) the touchpad needs to be held in order to flip the kill switch*/
+    private double killSwitchHoldTime;
+    /** The time stamp (nanoseconds) of when the touchpad began being pressed. -1.0 if touchpad is not currently being pressed*/
+    private double killSwitchPressedTime;
     /** The theoretical voltage the robot should have */
     private double nominalVoltage;
     /** The actual voltage the robot has */
@@ -34,6 +36,8 @@ public class LM0Control extends DriverControl<LM0Board> {
         this.telemetry = telemetry;
         slowMode = false;
         slowModeMult = 0.33;
+        killSwitchHoldTime = 1000000.0;
+        killSwitchPressedTime = -1.0;
         nominalVoltage = 12.0;
         currentVoltage = nominalVoltage;
         matchTimer = new ElapsedTime();
@@ -62,10 +66,10 @@ public class LM0Control extends DriverControl<LM0Board> {
             killSwitchPressedTime = -1.0;
         }
 
+        // Will make states for these
         if (gamepad1.right_bumper) { //Intake
             board.cacheIntakeMotorPower(0.5);
         }
-
         if (gamepad2.x){ //Outtake
             board.cacheIntakeMotorPower(-0.5);
         }
