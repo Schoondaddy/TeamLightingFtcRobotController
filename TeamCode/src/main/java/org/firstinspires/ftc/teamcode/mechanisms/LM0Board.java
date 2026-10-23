@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorControllerEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -9,6 +10,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 public class LM0Board implements ProgrammingBoard {
     private static class MotorWrapper {
@@ -55,6 +58,9 @@ public class LM0Board implements ProgrammingBoard {
     private DcMotorEx flywheelMotor1;
     private DcMotorEx flywheelMotor2;
     private MotorWrapper[] motors;
+    private Pose2D currentPose;
+    private GoBildaPinpointDriver odoPod;
+
 
     @Override public void init(HardwareMap hwMap) {
         voltageSensor = hwMap.get(VoltageSensor.class, "Control Hub");
@@ -89,6 +95,9 @@ public class LM0Board implements ProgrammingBoard {
         flywheelMotor2 = hwMap.get(DcMotorEx.class, "fr_motor");
         flywheelMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
         flywheelMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        odoPod = hwMap.get(GoBildaPinpointDriver.class, "odo_pod");
+        odoPod.resetPosAndIMU();
     }
 
     @Override
@@ -96,6 +105,7 @@ public class LM0Board implements ProgrammingBoard {
         if (voltageTimer.seconds() > 0.05) {
             cachedVoltage = voltageSensor.getVoltage();
         }
+        currentPose = odoPod.getPosition();
     }
     @Override
     public void writeLoop() {
@@ -150,6 +160,7 @@ public class LM0Board implements ProgrammingBoard {
     public double getFlywheelMotor2Vel() {
         return flywheelMotor2.getVelocity();
     }
+    public Pose2D getCurrentPose() {return currentPose; }
 
     public void flipKillSwitch() {
         for (MotorWrapper motor : motors) {
