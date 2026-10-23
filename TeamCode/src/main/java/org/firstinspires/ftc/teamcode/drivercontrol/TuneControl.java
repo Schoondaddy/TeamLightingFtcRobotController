@@ -7,10 +7,17 @@ import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.quadrati
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.mechanisms.ChassisBoard;
 import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
 
+import java.util.ArrayList;
+
 public class TuneControl extends DriverControl<LM0Board>{
+    ArrayList<Double> xList = new ArrayList<>();
+    ArrayList<Double> yList = new ArrayList<>();
+    private boolean driveStop;
+    private boolean turretStop;
+    private boolean rotateStop;
+
     public void init(Telemetry telemetry, LM0Board board, Gamepad gamepad1, Gamepad gamepad2) {
         this.board = board;
         this.gamepad1 = gamepad1;
@@ -19,8 +26,9 @@ public class TuneControl extends DriverControl<LM0Board>{
     }
     @Override
     public void loop() {
-        handleDrivetrain();
+        if (!driveStop) {handleDrivetrain();}
 
+        if (!turretStop) {handleTurret();}
         if (gamepad1.startWasPressed()) {
             board.flipKillSwitch();
             gamepad1.rumbleBlips(3);
@@ -51,11 +59,17 @@ public class TuneControl extends DriverControl<LM0Board>{
         board.cacheFrMotorPower(frPower);
         board.cacheBlMotorPower(blPower);
         board.cacheBrMotorPower(brPower);
-        
+
 
 
         telemetry.addData("Front left/Right", "%4.2f, %4.2f", flPower, frPower);
         telemetry.addData("Back  left/Right", "%4.2f, %4.2f", blPower, brPower);
         telemetry.addData("Voltage", board.getCachedVoltage());
+    }
+
+    public static void handleTurret() {
+
+
+
     }
 }
