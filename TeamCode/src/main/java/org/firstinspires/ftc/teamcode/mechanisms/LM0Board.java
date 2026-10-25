@@ -32,6 +32,9 @@ public class LM0Board implements ProgrammingBoard {
             prevCachedPower = cachedPower;
             cachedPower = power;
         }
+        private double getCachedPower() {
+            return cachedPower;
+        }
         private void write() {
             if (cachedPower != prevCachedPower) {
                 motor.setPower(cachedPower);
@@ -76,6 +79,8 @@ public class LM0Board implements ProgrammingBoard {
         brMotor = new MotorWrapper(hwMap.get(DcMotor.class, "br_motor"));
 
         motors = new MotorWrapper[] {intakeMotor, passthroughMotor, flMotor, frMotor, blMotor, brMotor};
+        passthroughMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         flMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         blMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -137,6 +142,12 @@ public class LM0Board implements ProgrammingBoard {
     }
     public void cachePassthroughMotorPower(double power) {
         passthroughMotor.cachePower(power);
+    }
+    public double getIntakeMotorPower() {
+        return intakeMotor.getCachedPower();
+    }
+    public double getPassthroughMotorPower() {
+        return passthroughMotor.getCachedPower();
     }
     public void setFlywheelMotor1Vel(double velocity) {
         flywheelMotor1.setVelocity(velocity);
