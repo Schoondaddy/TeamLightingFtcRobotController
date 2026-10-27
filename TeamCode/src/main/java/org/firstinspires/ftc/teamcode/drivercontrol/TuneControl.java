@@ -15,8 +15,8 @@ public class TuneControl extends DriverControl<LM0Board>{
     ArrayList<Double> xList = new ArrayList<>();
     ArrayList<Double> yList = new ArrayList<>();
     private boolean driveStop;
-    private boolean turretStop;
     private boolean rotateStop;
+    private boolean hoodStop;
 
     public void init(Telemetry telemetry, LM0Board board, Gamepad gamepad1, Gamepad gamepad2) {
         this.board = board;
@@ -26,9 +26,16 @@ public class TuneControl extends DriverControl<LM0Board>{
     }
     @Override
     public void loop() {
-        if (!driveStop) {handleDrivetrain();}
+        if (gamepad1.aWasPressed()) { driverStop = !driverStop; }
 
-        if (!turretStop) {handleTurret();}
+        if (gamepad1.xWasPressed()) { rotateStop = !rotateStop; }
+
+        if (gamepad1.yWasPressed()) { hoodStop = !hoodStop; }
+        
+        if (!hoodStop) {handleHood();}
+        if (!rotateStop) {handleTRotation();}
+        if (!driveStop) {handleDrivetrain();}
+        
         if (gamepad1.startWasPressed()) {
             board.flipKillSwitch();
             gamepad1.rumbleBlips(3);
@@ -67,9 +74,12 @@ public class TuneControl extends DriverControl<LM0Board>{
         telemetry.addData("Voltage", board.getCachedVoltage());
     }
 
-    public static void handleTurret() {
+    public static void handleTRotation() {
+        telemetry.addData("TurretRotation", "N/A")
+    }
 
-
+    public static void handleHood() {
+        board.AimServoPosition(
 
     }
 }
