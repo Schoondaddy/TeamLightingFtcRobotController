@@ -26,7 +26,7 @@ public class TuneControl extends DriverControl<LM0Board>{
     }
     @Override
     public void loop() {
-        if (gamepad1.aWasPressed()) { driverStop = !driverStop; }
+        if (gamepad1.aWasPressed()) { driveStop = !driveStop; }
 
         if (gamepad1.xWasPressed()) { rotateStop = !rotateStop; }
 
@@ -74,12 +74,11 @@ public class TuneControl extends DriverControl<LM0Board>{
         telemetry.addData("Voltage", board.getCachedVoltage());
     }
 
-    public static void handleTRotation() {
-        telemetry.addData("TurretRotation", "N/A")
+    public static Object handleTRotation() {
+        return "N/A";
     }
 
-    public static void handleHood() {
-        board.AimServoPosition(
-
+    public static double handleHood() {
+        return 0.5;
     }
 }
