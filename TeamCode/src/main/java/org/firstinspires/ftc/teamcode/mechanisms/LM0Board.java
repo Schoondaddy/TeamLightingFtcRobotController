@@ -97,8 +97,8 @@ public class LM0Board implements ProgrammingBoard {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
-        flywheelMotor1 = hwMap.get(DcMotorEx.class, "fl_motor");
-        flywheelMotor2 = hwMap.get(DcMotorEx.class, "fr_motor");
+        flywheelMotor1 = hwMap.get(DcMotorEx.class, "fly_motor_1");
+        flywheelMotor2 = hwMap.get(DcMotorEx.class, "fly_motor_2");
         flywheelMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
         flywheelMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
 
