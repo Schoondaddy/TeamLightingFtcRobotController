@@ -103,6 +103,8 @@ public class LM0Board implements ProgrammingBoard {
 
         odoPod = hwMap.get(GoBildaPinpointDriver.class, "odo_pod");
         odoPod.resetPosAndIMU();
+
+        aimServo.setPosition(0.5);
     }
 
     @Override

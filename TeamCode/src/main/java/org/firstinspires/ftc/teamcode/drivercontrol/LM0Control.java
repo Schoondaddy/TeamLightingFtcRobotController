@@ -74,7 +74,12 @@ public class LM0Control extends DriverControl<LM0Board> {
             board.cacheIntakeMotorPower(-0.5);
         }
         if (gamepad2.right_trigger_pressed){ //Launch
-            //waiting for launch method
+            board.setFlywheelMotor1Vel(1.0);
+            board.setFlywheelMotor2Vel(1.0);
+        }
+        if (gamepad2.right_trigger < 0.1) {
+            board.setFlywheelMotor2Vel(0.0);
+            board.setFlywheelMotor1Vel(0.0);
         }
 
     }
