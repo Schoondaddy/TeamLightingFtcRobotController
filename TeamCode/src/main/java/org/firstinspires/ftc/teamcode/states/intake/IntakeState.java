@@ -19,7 +19,7 @@ public class IntakeState extends RobotState<LM0Board> {
 
     @Override
     public void onStateStart() {
-        System.out.println("Intaking");
+        telemetry.addData("Passthrough", "Intaking");
     }
 
     @Override

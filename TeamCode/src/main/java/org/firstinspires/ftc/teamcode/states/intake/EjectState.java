@@ -19,7 +19,7 @@ public class EjectState extends RobotState<LM0Board> {
 
     @Override
     public void onStateStart() {
-        System.out.println("Ejecting");
+        telemetry.addData("Passthrough", "Ejecting");
     }
 
     @Override

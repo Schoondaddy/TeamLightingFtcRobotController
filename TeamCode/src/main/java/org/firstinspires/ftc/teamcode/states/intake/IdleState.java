@@ -17,7 +17,7 @@ public class IdleState extends RobotState<LM0Board> {
     }
 
     @Override
-    public void onStateStart() {System.out.println("Intake idle");}
+    public void onStateStart() {telemetry.addData("Passthrough", "Idle");}
 
     @Override
     public void onStateLoop() {
