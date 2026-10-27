@@ -103,6 +103,7 @@ public class LM0Control extends DriverControl<LM0Board> {
             board.setFlywheelMotor2Vel(0.0);
             board.setFlywheelMotor1Vel(0.0); 
             board.toggleBlockerRotation();
+            board.setBlockerServoPosition(0.0);
         } else {
             if (board.getFlywheelMotor1Velocity() > 0.9 && board.getFlywheelMotor2Velocity() > 0.9) {
                 board.toggleBlockerRotation();
