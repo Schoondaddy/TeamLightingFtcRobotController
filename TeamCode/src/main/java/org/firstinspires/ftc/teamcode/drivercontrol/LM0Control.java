@@ -81,9 +81,10 @@ public class LM0Control extends DriverControl<LM0Board> {
         if (gamepad2.right_trigger < 0.1) {
             board.setFlywheelMotor2Vel(0.0);
             board.setFlywheelMotor1Vel(0.0);
+            board.toggleBlockerRotation();
         } else {
             if (board.getFlywheelMotor1Power() > 0.9 && board.getFlywheelMotor2Power() > 0.9) {
-                
+                board.toggleBlockerRotation();
             }
         }
 
