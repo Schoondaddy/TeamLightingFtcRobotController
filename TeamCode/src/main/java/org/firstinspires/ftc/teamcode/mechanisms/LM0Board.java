@@ -195,11 +195,11 @@ public class LM0Board implements ProgrammingBoard {
             motor.killSwitch = !motor.killSwitch;
         }
     }
-    public double getFlywheelMotor1Power() {
-        return flywheelMotor1.getPower();
+    public double getFlywheelMotor1Velocity() {
+        return flywheelMotor1.getVelocity();
     }
-    public double getFlywheelMotor2Power() {
-        return flywheelMotor2.getPower();
+    public double getFlywheelMotor2Velocity() {
+        return flywheelMotor2.getVelocity();
     }
     public void toggleBlockerRotation() {
         blockerRotation = !blockerRotation;

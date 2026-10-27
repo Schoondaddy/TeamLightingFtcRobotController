@@ -89,8 +89,10 @@ public class LM0Control extends DriverControl<LM0Board> {
                 }
             }
         }
+        telemetry.addData("Intake power", intakePower);
+        telemetry.addData("Passthrough power", passthroughPower);
         board.cacheIntakeMotorPower(Math.max(-0.5, Math.min(intakePower, 0.5)));
-        board.cacheIntakeMotorPower(Math.max(-0.5, Math.min(passthroughPower, 0.5)));
+        board.cachePassthroughMotorPower(Math.max(0.0, Math.min(passthroughPower, 0.5)));
 
         if (gamepad2.right_trigger_pressed){ //Launch
 
@@ -99,12 +101,13 @@ public class LM0Control extends DriverControl<LM0Board> {
         }
         if (gamepad2.right_trigger < 0.1) {
             board.setFlywheelMotor2Vel(0.0);
-            board.setFlywheelMotor1Vel(0.0);
+            board.setFlywheelMotor1Vel(0.0); 
             board.toggleBlockerRotation();
             board.setBlockerServoPosition(0.0);
         } else {
-            if (board.getFlywheelMotor1Power() > 0.9 && board.getFlywheelMotor2Power() > 0.9) {
+            if (board.getFlywheelMotor1Velocity() > 0.9 && board.getFlywheelMotor2Velocity() > 0.9) {
                 board.toggleBlockerRotation();
+                board.cachePassthroughMotorPower(0.5);
             }
         }
 
