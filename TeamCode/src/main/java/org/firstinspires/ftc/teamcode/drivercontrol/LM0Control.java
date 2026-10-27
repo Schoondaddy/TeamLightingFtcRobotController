@@ -67,12 +67,31 @@ public class LM0Control extends DriverControl<LM0Board> {
         }
 
         // Will make states for these
-        if (gamepad1.right_bumper) { //Intake
-            board.cacheIntakeMotorPower(0.5);
+        double intakePower = board.getIntakeMotorPower();
+        double passthroughPower = board.getPassthroughMotorPower();
+        if (gamepad2.x){ //eject
+            intakePower -= 0.05;
+            passthroughPower -= 0.05;
+        } else if (gamepad1.right_trigger > 0.1) { //Intake
+            intakePower += 0.05;
+            passthroughPower += 0.05;
+        } else {
+            if (intakePower != 0.0) {
+                intakePower -= 0.10 * Math.signum(intakePower);
+                if (Math.abs(intakePower) < 0.10) {
+                    intakePower = 0.0;
+                }
+            }
+            if (passthroughPower != 0.0) {
+                passthroughPower -= 0.10 * Math.signum(passthroughPower);
+                if (Math.abs(passthroughPower) < 0.10) {
+                    passthroughPower = 0.0;
+                }
+            }
         }
-        if (gamepad2.x){ //Outtake
-            board.cacheIntakeMotorPower(-0.5);
-        }
+        board.cacheIntakeMotorPower(Math.max(-0.5, Math.min(intakePower, 0.5)));
+        board.cacheIntakeMotorPower(Math.max(-0.5, Math.min(passthroughPower, 0.5)));
+
         if (gamepad2.right_trigger_pressed){ //Launch
 
             board.setFlywheelMotor1Vel(1.0);
