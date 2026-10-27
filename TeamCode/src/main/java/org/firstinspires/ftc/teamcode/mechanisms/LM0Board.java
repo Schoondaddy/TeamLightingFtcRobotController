@@ -63,6 +63,7 @@ public class LM0Board implements ProgrammingBoard {
     private MotorWrapper[] motors;
     private Pose2D currentPose;
     private GoBildaPinpointDriver odoPod;
+    private boolean blockerRotation = false;
 
 
     @Override public void init(HardwareMap hwMap) {
@@ -118,6 +119,14 @@ public class LM0Board implements ProgrammingBoard {
     public void writeLoop() {
         for (LM0Board.MotorWrapper motor : motors) {
             motor.write();
+        }
+        if (blockerRotation){
+            double position = blockerServo.getPosition();
+            position += 0.05;
+            if (position > 1.0) {
+                position--;
+            }
+            blockerServo.setPosition(position);
         }
     }
     public double getCachedVoltage() {
@@ -189,5 +198,8 @@ public class LM0Board implements ProgrammingBoard {
     }
     public double getFlywheelMotor2Power() {
         return flywheelMotor2.getPower();
+    }
+    public void toggleBlockerRotation() {
+        blockerRotation = !blockerRotation;
     }
 }
