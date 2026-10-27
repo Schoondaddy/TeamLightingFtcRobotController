@@ -57,11 +57,11 @@ public class LM0Control extends DriverControl<LM0Board> {
         if (gamepad2.touchpad) { //Kill switch
             if (killSwitchPressedTime == -1.0) {
                 killSwitchPressedTime = matchTimer.time();
-            }
-            else if (matchTimer.time() - killSwitchPressedTime >= killSwitchHoldTime)
+            } else if (matchTimer.time() - killSwitchPressedTime >= killSwitchHoldTime) {
                 board.flipKillSwitch();
                 gamepad1.rumbleBlips(3);
                 killSwitchPressedTime = -1.0;
+            }
         } else if (killSwitchPressedTime != -1.0){
             killSwitchPressedTime = -1.0;
         }
