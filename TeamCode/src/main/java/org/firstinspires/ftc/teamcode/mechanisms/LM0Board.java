@@ -184,4 +184,10 @@ public class LM0Board implements ProgrammingBoard {
             motor.killSwitch = !motor.killSwitch;
         }
     }
+    public double getFlywheelMotor1Power() {
+        return flywheelMotor1.getPower();
+    }
+    public double getFlywheelMotor2Power() {
+        return flywheelMotor2.getPower();
+    }
 }
