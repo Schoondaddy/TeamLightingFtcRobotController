@@ -171,6 +171,10 @@ public class LM0Board implements ProgrammingBoard {
     public double getFlywheelMotor2Vel() {
         return flywheelMotor2.getVelocity();
     }
+
+    public double getAimServoPosition() {
+        return aimServo.getPosition();
+    }
     public Pose2D getCurrentPose() {return currentPose; }
 
     public void flipKillSwitch() {
