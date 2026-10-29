@@ -26,7 +26,7 @@ public class LM0Control extends DriverControl<LM0Board> {
     private double nominalVoltage;
     /** The actual voltage the robot has */
     private double currentVoltage;
-
+ //asdfpoasdfi
     public ElapsedTime matchTimer;
     @Override
     public void init(Telemetry telemetry, LM0Board board, Gamepad gamepad1, Gamepad gamepad2) {
@@ -36,11 +36,14 @@ public class LM0Control extends DriverControl<LM0Board> {
         this.telemetry = telemetry;
         slowMode = false;
         slowModeMult = 0.33;
-        killSwitchHoldTime = 1000000.0;
+        killSwitchHoldTime = 3.0;
         killSwitchPressedTime = -1.0;
         nominalVoltage = 12.0;
         currentVoltage = nominalVoltage;
         matchTimer = new ElapsedTime();
+        board.setAimServoPosition(0.5);
+        board.setFlywheelMotor1Vel(2000.0);
+        board.setFlywheelMotor2Vel(2000.0);
     }
     @Override
     public void loop() {
@@ -70,7 +73,7 @@ public class LM0Control extends DriverControl<LM0Board> {
         // Will make states for these
         double intakePower = board.getIntakeMotorPower();
         double passthroughPower = board.getPassthroughMotorPower();
-        if (gamepad2.x){ //eject
+        if (gamepad1.right_bumper || gamepad2.right_bumper || gamepad2.x){ //eject
             intakePower -= 0.05;
             passthroughPower -= 0.05;
         } else if (gamepad1.right_trigger > 0.1) { //Intake
@@ -90,22 +93,31 @@ public class LM0Control extends DriverControl<LM0Board> {
                 }
             }
         }
-        board.cacheIntakeMotorPower(Math.max(-0.75, Math.min(intakePower, 0.75)));
-        board.cachePassthroughMotorPower(Math.max(0.0, Math.min(passthroughPower, 0.75)));
-        board.setFlywheelMotor1Vel(1.0);
-        board.setFlywheelMotor2Vel(1.0);
-        /*
-        if (gamepad2.right_trigger_pressed){ //Launch
-            board.setFlywheelMotor1Vel(1.0);
-            board.setFlywheelMotor2Vel(1.0);
+        intakePower = Math.max(-0.75, Math.min(intakePower, 0.75));
+        passthroughPower = Math.max(-0.75, Math.min(passthroughPower, 0.75));
+        if (gamepad1.right_bumper || gamepad2.right_bumper) {
+            passthroughPower = Math.max(0.0, Math.min(passthroughPower, 0.75));
         }
+
+        telemetry.addData("Intake power", intakePower);
+        telemetry.addData("Passthrough power", passthroughPower);
+        board.cacheIntakeMotorPower(intakePower);
+        board.cachePassthroughMotorPower(passthroughPower);
+
+
+
+        telemetry.addData("Flywheel motor vels: ", board.getFlywheelMotor1Vel() + " " + board.getFlywheelMotor2Vel());
+        if (gamepad2.right_trigger_pressed){ //Launch
+            board.setBlockerServoPower(1.0);
+        }
+        /*
         if (gamepad2.right_trigger < 0.1) {
             board.setFlywheelMotor2Vel(0.0);
             board.setFlywheelMotor1Vel(0.0); 
-            board.setBlockerRotation(false);
+            board.setBlockerServoPower(0.0);
         } else {
-            if (board.getFlywheelMotor1Velocity() > 0.9 && board.getFlywheelMotor2Velocity() > 0.9) {
-                board.setBlockerRotation(true);
+            if (board.getFlywheelMotor1Vel() > 0.9 && board.getFlywheelMotor2Vel() > 0.9) {
+                board.setBlockerServoPower(1.0);
                 board.cachePassthroughMotorPower(0.5);
             }
         }
@@ -123,9 +135,7 @@ public class LM0Control extends DriverControl<LM0Board> {
         double lateral;
         double yaw;
         double overrideDeadzone = 0.1;
-        if ((gamepad2.left_stick_x > overrideDeadzone) || (gamepad2.left_stick_y > overrideDeadzone) || (gamepad2.right_stick_x > overrideDeadzone)) {
-            telemetry.addData("Gamepad 2 ", "is controlling yay!");
-            telemetry.addData("Gamepad 2 left stick x, y", "%4.2f, %4.2f", gamepad2.left_stick_y, gamepad2.left_stick_y);
+        if ((Math.abs(gamepad2.left_stick_x) > overrideDeadzone) || (Math.abs(gamepad2.left_stick_y) > overrideDeadzone) || (Math.abs(gamepad2.right_stick_x) > overrideDeadzone)) {
             axial = -0.5 * quadraticScale(applyDeadzone(gamepad2.left_stick_y, 0.05));
             lateral = 0.5 * quadraticScale(applyDeadzone(gamepad2.left_stick_x, 0.05));
             yaw = 0.5 * quadraticScale(applyDeadzone(gamepad2.right_stick_x, 0.05));

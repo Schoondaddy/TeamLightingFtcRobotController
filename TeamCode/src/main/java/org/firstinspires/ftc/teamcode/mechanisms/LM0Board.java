@@ -76,6 +76,7 @@ public class LM0Board implements ProgrammingBoard {
         //rotationServo3 = hwMap.get(Servo.class, "rot_servo_3");
         //rotationServo3.setDirection(Servo.Direction.REVERSE);
         aimServo = hwMap.get(Servo.class, "aim_servo");
+        aimServo.scaleRange(0.0, 0.5);
         blockerServo = hwMap.get(CRServo.class, "blocker_servo");
 
         intakeMotor = new MotorWrapper(hwMap.get(DcMotor.class, "intake_motor"));
@@ -87,7 +88,7 @@ public class LM0Board implements ProgrammingBoard {
         brMotor = new MotorWrapper(hwMap.get(DcMotor.class, "br_motor"));
 
         motors = new MotorWrapper[] {intakeMotor, passthroughMotor, flMotor, frMotor, blMotor, brMotor};
-        passthroughMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        passthroughMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         flMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         frMotor.setDirection(DcMotorSimple.Direction.FORWARD);
