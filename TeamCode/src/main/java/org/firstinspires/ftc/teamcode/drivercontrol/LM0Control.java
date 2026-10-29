@@ -55,6 +55,7 @@ public class LM0Control extends DriverControl<LM0Board> {
         handleDrivetrain();
 
         if (gamepad2.touchpad) { //Kill switch
+            telemetry.addData("Pressed time", matchTimer.time() - killSwitchPressedTime);
             if (killSwitchPressedTime == -1.0) {
                 killSwitchPressedTime = matchTimer.time();
             } else if (matchTimer.time() - killSwitchPressedTime >= killSwitchHoldTime) {
@@ -89,27 +90,26 @@ public class LM0Control extends DriverControl<LM0Board> {
                 }
             }
         }
-        telemetry.addData("Intake power", intakePower);
-        telemetry.addData("Passthrough power", passthroughPower);
-        board.cacheIntakeMotorPower(Math.max(-0.5, Math.min(intakePower, 0.5)));
-        board.cachePassthroughMotorPower(Math.max(0.0, Math.min(passthroughPower, 0.5)));
-
+        board.cacheIntakeMotorPower(Math.max(-0.75, Math.min(intakePower, 0.75)));
+        board.cachePassthroughMotorPower(Math.max(0.0, Math.min(passthroughPower, 0.75)));
+        board.setFlywheelMotor1Vel(1.0);
+        board.setFlywheelMotor2Vel(1.0);
+        /*
         if (gamepad2.right_trigger_pressed){ //Launch
-
             board.setFlywheelMotor1Vel(1.0);
             board.setFlywheelMotor2Vel(1.0);
         }
         if (gamepad2.right_trigger < 0.1) {
             board.setFlywheelMotor2Vel(0.0);
             board.setFlywheelMotor1Vel(0.0); 
-            board.toggleBlockerRotation();
-            board.setBlockerServoPosition(0.0);
+            board.setBlockerRotation(false);
         } else {
             if (board.getFlywheelMotor1Velocity() > 0.9 && board.getFlywheelMotor2Velocity() > 0.9) {
-                board.toggleBlockerRotation();
+                board.setBlockerRotation(true);
                 board.cachePassthroughMotorPower(0.5);
             }
         }
+        */
 
     }
 
@@ -124,6 +124,8 @@ public class LM0Control extends DriverControl<LM0Board> {
         double yaw;
         double overrideDeadzone = 0.1;
         if ((gamepad2.left_stick_x > overrideDeadzone) || (gamepad2.left_stick_y > overrideDeadzone) || (gamepad2.right_stick_x > overrideDeadzone)) {
+            telemetry.addData("Gamepad 2 ", "is controlling yay!");
+            telemetry.addData("Gamepad 2 left stick x, y", "%4.2f, %4.2f", gamepad2.left_stick_y, gamepad2.left_stick_y);
             axial = -0.5 * quadraticScale(applyDeadzone(gamepad2.left_stick_y, 0.05));
             lateral = 0.5 * quadraticScale(applyDeadzone(gamepad2.left_stick_x, 0.05));
             yaw = 0.5 * quadraticScale(applyDeadzone(gamepad2.right_stick_x, 0.05));

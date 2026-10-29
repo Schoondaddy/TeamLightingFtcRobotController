@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 
 
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorControllerEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -47,11 +48,11 @@ public class LM0Board implements ProgrammingBoard {
     private ElapsedTime voltageTimer;
     private VoltageSensor voltageSensor;
     private double cachedVoltage = 12;
-    private Servo rotationServo1;
-    private Servo rotationServo2;
-    private Servo rotationServo3;
+    //private Servo rotationServo1;
+    //private Servo rotationServo2;
+    //private Servo rotationServo3;
     private Servo aimServo;
-    private Servo blockerServo;
+    private CRServo blockerServo;
     private MotorWrapper intakeMotor;
     private MotorWrapper passthroughMotor;
     private MotorWrapper flMotor;
@@ -70,12 +71,12 @@ public class LM0Board implements ProgrammingBoard {
         voltageSensor = hwMap.get(VoltageSensor.class, "Control Hub");
         voltageTimer = new ElapsedTime();
 
-        rotationServo1 = hwMap.get(Servo.class, "rot_servo_1");
-        rotationServo2 = hwMap.get(Servo.class, "rot_servo_2");
-        rotationServo3 = hwMap.get(Servo.class, "rot_servo_3");
-        rotationServo3.setDirection(Servo.Direction.REVERSE);
+        //rotationServo1 = hwMap.get(Servo.class, "rot_servo_1");
+        //rotationServo2 = hwMap.get(Servo.class, "rot_servo_2");
+        //rotationServo3 = hwMap.get(Servo.class, "rot_servo_3");
+        //rotationServo3.setDirection(Servo.Direction.REVERSE);
         aimServo = hwMap.get(Servo.class, "aim_servo");
-        blockerServo = hwMap.get(Servo.class, "blocker_servo");
+        blockerServo = hwMap.get(CRServo.class, "blocker_servo");
 
         intakeMotor = new MotorWrapper(hwMap.get(DcMotor.class, "intake_motor"));
         passthroughMotor = new MotorWrapper(hwMap.get(DcMotor.class, "passthrough_motor"));
@@ -100,7 +101,6 @@ public class LM0Board implements ProgrammingBoard {
         flywheelMotor1 = hwMap.get(DcMotorEx.class, "flywheel_motor_1");
         flywheelMotor2 = hwMap.get(DcMotorEx.class, "flywheel_motor_2");
         flywheelMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
-
         flywheelMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
 
         odoPod = hwMap.get(GoBildaPinpointDriver.class, "odo_pod");
@@ -120,14 +120,6 @@ public class LM0Board implements ProgrammingBoard {
     public void writeLoop() {
         for (LM0Board.MotorWrapper motor : motors) {
             motor.write();
-        }
-        if (blockerRotation){
-            double position = blockerServo.getPosition();
-            position += 0.05;
-            if (position > 1.0) {
-                position--;
-            }
-            blockerServo.setPosition(position);
         }
     }
     public double getCachedVoltage() {
@@ -149,15 +141,12 @@ public class LM0Board implements ProgrammingBoard {
 
     public void setTurretRotation(double rotation) {
         double pos = rotation * (1.0/360.0);
-        rotationServo1.setPosition(pos);
-        rotationServo2.setPosition(pos);
-        rotationServo3.setPosition(pos);
+        //rotationServo1.setPosition(pos);
+        //rotationServo2.setPosition(pos);
+        //rotationServo3.setPosition(pos);
     }
     public void setAimServoPosition(double pos) {
         aimServo.setPosition(pos);
-    }
-    public void setBlockerServoPosition(double pos) {
-        blockerServo.setPosition(pos);
     }
     public void cacheIntakeMotorPower(double power) {
         intakeMotor.cachePower(power);
@@ -194,13 +183,8 @@ public class LM0Board implements ProgrammingBoard {
             motor.killSwitch = !motor.killSwitch;
         }
     }
-    public double getFlywheelMotor1Velocity() {
-        return flywheelMotor1.getVelocity();
-    }
-    public double getFlywheelMotor2Velocity() {
-        return flywheelMotor2.getVelocity();
-    }
-    public void toggleBlockerRotation() {
-        blockerRotation = !blockerRotation;
+
+    public void setBlockerServoPower(double power) {
+        blockerServo.setPower(power);
     }
 }
