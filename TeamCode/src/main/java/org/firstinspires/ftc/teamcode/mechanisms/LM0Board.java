@@ -40,9 +40,12 @@ public class LM0Board implements ProgrammingBoard {
             return cachedPower;
         }
         private void write() {
-            if (cachedPower != prevCachedPower) {
-                motor.setPower(cachedPower);
+            if (killSwitch){
+                motor.setPower(0.0);
             }
+            else if (cachedPower != prevCachedPower) {
+                    motor.setPower(cachedPower);
+                }
         }
     }
     private ElapsedTime voltageTimer;
@@ -64,8 +67,6 @@ public class LM0Board implements ProgrammingBoard {
     private MotorWrapper[] motors;
     private Pose2D currentPose;
     private GoBildaPinpointDriver odoPod;
-    private boolean blockerRotation = false;
-
 
     @Override public void init(HardwareMap hwMap) {
         voltageSensor = hwMap.get(VoltageSensor.class, "Control Hub");
@@ -76,7 +77,7 @@ public class LM0Board implements ProgrammingBoard {
         //rotationServo3 = hwMap.get(Servo.class, "rot_servo_3");
         //rotationServo3.setDirection(Servo.Direction.REVERSE);
         aimServo = hwMap.get(Servo.class, "aim_servo");
-        aimServo.scaleRange(0.0, 0.5);
+        aimServo.scaleRange(0.0, 0.8);
         blockerServo = hwMap.get(CRServo.class, "blocker_servo");
 
         intakeMotor = new MotorWrapper(hwMap.get(DcMotor.class, "intake_motor"));
