@@ -18,6 +18,7 @@ public class LM0Control extends DriverControl<LM0Board> {
     private boolean fastMode;
     /** The mult applied to motor power when Slow Mode is toggled */
     private double slowModeMult;
+    private boolean killSwitch;
     /** The amount of time (nanoseconds) the touchpad needs to be held in order to flip the kill switch*/
     private double killSwitchHoldTime;
     /** The time stamp (nanoseconds) of when the touchpad began being pressed. -1.0 if touchpad is not currently being pressed*/
@@ -26,7 +27,9 @@ public class LM0Control extends DriverControl<LM0Board> {
     private double nominalVoltage;
     /** The actual voltage the robot has */
     private double currentVoltage;
- //asdfpoasdfi
+
+    private double FLYWHEEL_VELOCITY;
+
     public ElapsedTime matchTimer;
     @Override
     public void init(Telemetry telemetry, LM0Board board, Gamepad gamepad1, Gamepad gamepad2) {
@@ -36,14 +39,16 @@ public class LM0Control extends DriverControl<LM0Board> {
         this.telemetry = telemetry;
         slowMode = false;
         slowModeMult = 0.33;
+        killSwitch = false;
         killSwitchHoldTime = 3.0;
         killSwitchPressedTime = -1.0;
         nominalVoltage = 12.0;
         currentVoltage = nominalVoltage;
         matchTimer = new ElapsedTime();
-        board.setAimServoPosition(0.5);
-        board.setFlywheelMotor1Vel(2000.0);
-        board.setFlywheelMotor2Vel(2000.0);
+        FLYWHEEL_VELOCITY = 1650.0;
+        board.setAimServoPosition(0.825);
+        board.setFlywheelMotor1Vel(FLYWHEEL_VELOCITY);
+        board.setFlywheelMotor2Vel(FLYWHEEL_VELOCITY);
     }
     @Override
     public void loop() {
@@ -63,9 +68,14 @@ public class LM0Control extends DriverControl<LM0Board> {
                 killSwitchPressedTime = matchTimer.time();
             } else if (matchTimer.time() - killSwitchPressedTime >= killSwitchHoldTime) {
                 board.flipKillSwitch();
+                killSwitch = !killSwitch;
+                board.setFlywheelMotor1Vel(0.0);
+                board.setFlywheelMotor2Vel(0.0);
+
                 gamepad1.rumbleBlips(3);
                 killSwitchPressedTime = -1.0;
             }
+
         } else if (killSwitchPressedTime != -1.0){
             killSwitchPressedTime = -1.0;
         }
@@ -76,7 +86,7 @@ public class LM0Control extends DriverControl<LM0Board> {
         if (gamepad1.right_bumper || gamepad2.right_bumper || gamepad2.x){ //eject
             intakePower -= 0.05;
             passthroughPower -= 0.05;
-        } else if (gamepad1.right_trigger > 0.1) { //Intake
+        } else if (gamepad1.right_trigger > 0.1 || gamepad2.right_trigger > 0.1) { //Intake
             intakePower += 0.05;
             passthroughPower += 0.05;
         } else {
@@ -98,17 +108,18 @@ public class LM0Control extends DriverControl<LM0Board> {
         if (gamepad1.right_bumper || gamepad2.right_bumper) {
             passthroughPower = Math.max(0.0, Math.min(passthroughPower, 0.75));
         }
-
-        telemetry.addData("Intake power", intakePower);
-        telemetry.addData("Passthrough power", passthroughPower);
         board.cacheIntakeMotorPower(intakePower);
         board.cachePassthroughMotorPower(passthroughPower);
 
+        telemetry.addData("TPS: ", board.getFlywheelMotor1Vel());
 
 
-        telemetry.addData("Flywheel motor vels: ", board.getFlywheelMotor1Vel() + " " + board.getFlywheelMotor2Vel());
-        if (gamepad2.right_trigger_pressed){ //Launch
+        if (killSwitch) {
+            board.setBlockerServoPower(0.0);
+        } else if (gamepad2.right_trigger_pressed ) { //Launch
             board.setBlockerServoPower(1.0);
+        } else {
+            board.setBlockerServoPower(-1.0);
         }
         /*
         if (gamepad2.right_trigger < 0.1) {
