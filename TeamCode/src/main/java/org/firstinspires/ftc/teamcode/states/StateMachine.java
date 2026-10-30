@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.states;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanisms.ProgrammingBoard;
 
-public class StateMachine<B extends ProgrammingBoard> {
+public class StateMachine<B extends ProgrammingBoard, O extends OpMode> {
+    private final O opMode;
     /** FTC telemetry interface used to send data to the Driver Station*/
     private final Telemetry telemetry;
     /** Robot hardware used by a DriverControl subclass*/
@@ -15,9 +17,10 @@ public class StateMachine<B extends ProgrammingBoard> {
     /** Second driver gamepad*/
     private final Gamepad gamepad2;
     /** The current active state*/
-    private RobotState<B> currentState;
+    private RobotState<B, O> currentState;
     private final StateCategory stateCategory;
-    public StateMachine (Telemetry telemetry, B board, Gamepad gamepad1, Gamepad gamepad2, StateCategory category) {
+    public StateMachine (O opMode, Telemetry telemetry, B board, Gamepad gamepad1, Gamepad gamepad2, StateCategory category) {
+        this.opMode = opMode;
         this.telemetry = telemetry;
         this.board = board;
         this.gamepad1 = gamepad1;
@@ -29,22 +32,22 @@ public class StateMachine<B extends ProgrammingBoard> {
      *
      * @param initState the state that the state machine will initiate
      */
-    public void init(RobotState<B> initState) {
+    public void init(RobotState<B, O> initState) {
         currentState = initState;
-        currentState.initializeState(telemetry, board, gamepad1, gamepad2);
+        currentState.initializeState(opMode, telemetry, board, gamepad1, gamepad2);
         currentState.onStateStart();
     }
     /** Handles potential state changes, along with the current state's loop.
      * <p>This method should be called from the OpMode's {@link com.qualcomm.robotcore.eventloop.opmode.OpMode#loop() loop() method}</p>
      */
     public void loop() {
-        RobotState<B> nextState = currentState.getNextState();
+        RobotState<B, O> nextState = currentState.getNextState();
 
         if (nextState != currentState) {
             currentState.onStateEnd();
 
             currentState = nextState;
-            currentState.initializeState(telemetry, board, gamepad1, gamepad2);
+            currentState.initializeState(opMode, telemetry, board, gamepad1, gamepad2);
 
             currentState.onStateStart();
         }

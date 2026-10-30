@@ -67,6 +67,7 @@ public class ChassisBoard implements ProgrammingBoard {
     public void readLoop() {
         if (voltageTimer.seconds() > 0.05) {
             cachedVoltage = voltageSensor.getVoltage();
+            voltageTimer.reset();
         }
     }
     @Override

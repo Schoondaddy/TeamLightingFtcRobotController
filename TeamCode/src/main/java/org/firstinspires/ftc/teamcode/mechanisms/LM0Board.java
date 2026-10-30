@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
 
+import com.pedropathing.math.Pose;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,6 +13,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 public class LM0Board implements ProgrammingBoard {
@@ -178,7 +181,18 @@ public class LM0Board implements ProgrammingBoard {
         return aimServo.getPosition();
     }
     public Pose2D getCurrentPose() {return currentPose; }
+    public Pose getCurrentPedroPose() {
+        double x = currentPose.getX(DistanceUnit.INCH);
+        double y = currentPose.getY(DistanceUnit.INCH);
+        double heading = currentPose.getHeading(AngleUnit.RADIANS);
 
+        Pose convertedPose = new Pose(
+                y + 72,
+                72 - x,
+                heading - Math.PI / 2
+        );
+        return convertedPose;
+    }
     public void flipKillSwitch() {
         for (MotorWrapper motor : motors) {
             motor.killSwitch = !motor.killSwitch;
