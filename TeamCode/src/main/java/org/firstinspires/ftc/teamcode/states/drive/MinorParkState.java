@@ -17,7 +17,7 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 public class MinorParkState extends RobotState<LM0Board, LeaveParkAuto> {
 
     private final PoseFactory p = opMode.p;
-    private final Pose parkPose = p.of(133.2018, 34.567, 180);
+    private final Pose parkPose = p.of(127.83, 33.85, 180);
     private final Follower follower = opMode.follower;
     public MinorParkState() {
         super(StateCategory.DRIVE); }
