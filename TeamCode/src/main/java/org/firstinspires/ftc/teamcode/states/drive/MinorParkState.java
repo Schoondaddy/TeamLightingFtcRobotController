@@ -6,7 +6,7 @@ import com.pedropathing.ivy.Scheduler;
 import com.pedropathing.math.Pose;
 
 import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
-import org.firstinspires.ftc.teamcode.opmodes.autonomous.LeaveParkAuto;
+import org.firstinspires.ftc.teamcode.opmodes.autonomous.LeaveParkAutoBlue;
 import org.firstinspires.ftc.teamcode.states.RobotState;
 import org.firstinspires.ftc.teamcode.states.StateCategory;
 import static com.pedropathing.api.Paths.*;
@@ -14,7 +14,7 @@ import com.pedropathing.paths.Path;
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
-public class MinorParkState extends RobotState<LM0Board, LeaveParkAuto> {
+public class MinorParkState extends RobotState<LM0Board, LeaveParkAutoBlue> {
 
     private final PoseFactory p = opMode.p;
     private final Pose parkPose = p.of(127.83, 33.85, 180);
