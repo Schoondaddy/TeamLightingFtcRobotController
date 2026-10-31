@@ -27,8 +27,7 @@ public class LM0Control extends DriverControl<LM0Board> {
     private double nominalVoltage;
     /** The actual voltage the robot has */
     private double currentVoltage;
-
-    private double FLYWHEEL_VELOCITY;
+    private double flywheelVelocity;
 
     public ElapsedTime matchTimer;
     @Override
@@ -45,10 +44,10 @@ public class LM0Control extends DriverControl<LM0Board> {
         nominalVoltage = 12.0;
         currentVoltage = nominalVoltage;
         matchTimer = new ElapsedTime();
-        FLYWHEEL_VELOCITY = 1650.0;
+        flywheelVelocity = 1650.0;
         board.setAimServoPosition(0.825);
-        board.setFlywheelMotor1Vel(FLYWHEEL_VELOCITY);
-        board.setFlywheelMotor2Vel(FLYWHEEL_VELOCITY);
+        board.setFlywheelMotor1Vel(flywheelVelocity);
+        board.setFlywheelMotor2Vel(flywheelVelocity);
     }
     @Override
     public void loop() {
@@ -69,10 +68,16 @@ public class LM0Control extends DriverControl<LM0Board> {
             } else if (matchTimer.time() - killSwitchPressedTime >= killSwitchHoldTime) {
                 board.flipKillSwitch();
                 killSwitch = !killSwitch;
-                board.setFlywheelMotor1Vel(0.0);
-                board.setFlywheelMotor2Vel(0.0);
+                if (flywheelVelocity != 0.0) {
+                    flywheelVelocity = 0.0;
+                } else {
+                    flywheelVelocity = 1650.0;
+                }
+                board.setFlywheelMotor1Vel(flywheelVelocity);
+                board.setFlywheelMotor2Vel(flywheelVelocity);
 
                 gamepad1.rumbleBlips(3);
+                gamepad2.rumbleBlips(3);
                 killSwitchPressedTime = -1.0;
             }
 
@@ -88,7 +93,9 @@ public class LM0Control extends DriverControl<LM0Board> {
             passthroughPower -= 0.05;
         } else if (gamepad1.right_trigger > 0.1 || gamepad2.right_trigger > 0.1) { //Intake
             intakePower += 0.05;
-            passthroughPower += 0.05;
+            if (gamepad2.right_trigger > 0.1) {
+                passthroughPower += 0.05;
+            }
         } else {
             if (intakePower != 0.0) {
                 intakePower -= 0.10 * Math.signum(intakePower);
