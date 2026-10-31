@@ -16,7 +16,7 @@ public class ExampleAutonomous extends OpMode {
     /** The hardware the Autonomous uses */
     TestBoard board;
     /** The state machine */
-    StateMachine<TestBoard> sm;
+    StateMachine<TestBoard, ExampleAutonomous> sm;
     /** The time that has elapsed during the match */
     public ElapsedTime matchTimer;
 
@@ -24,7 +24,7 @@ public class ExampleAutonomous extends OpMode {
     public void init() {
         board = new TestBoard();
         board.init(hardwareMap);
-        sm = new StateMachine<>(telemetry, board, gamepad1, gamepad2, StateCategory.NONE);
+        sm = new StateMachine<>(this, telemetry, board, gamepad1, gamepad2, StateCategory.NONE);
     }
 
     @Override

@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.states.misc;
 
 import org.firstinspires.ftc.teamcode.mechanisms.TestBoard;
+import org.firstinspires.ftc.teamcode.opmodes.autonomous.ExampleAutonomous;
 import org.firstinspires.ftc.teamcode.states.RobotState;
 import org.firstinspires.ftc.teamcode.states.StateCategory;
 
-public class ExampleState extends RobotState<TestBoard> {
+public class ExampleState extends RobotState<TestBoard, ExampleAutonomous> {
     public ExampleState() { super(StateCategory.NONE); }
 
     @Override

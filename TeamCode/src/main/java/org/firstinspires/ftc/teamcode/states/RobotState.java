@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.states;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -7,10 +8,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanisms.ProgrammingBoard;
 
 
-public abstract class RobotState<B extends ProgrammingBoard>{
+public abstract class RobotState<B extends ProgrammingBoard, O extends OpMode>{
+    protected O opMode;
     public final StateCategory stateCategory;
     /** The state that will run in the next loop iteration; is the current state when not transitioning states */
-    protected RobotState<B> nextState = this;
+    protected RobotState<B, O> nextState = this;
     /** First driver gamepad*/
     protected Gamepad gamepad1;
     /** Second driver gamepad*/
@@ -31,7 +33,8 @@ public abstract class RobotState<B extends ProgrammingBoard>{
         this.stateCategory = StateCategory.NONE;
     }
     /** Called  to initialize the current state's member variables*/
-    public void initializeState(Telemetry telemetry, B board, Gamepad gamepad1, Gamepad gamepad2) {
+    public void initializeState(O opMode,Telemetry telemetry, B board, Gamepad gamepad1, Gamepad gamepad2) {
+        this.opMode = opMode;
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
         this.board = board;
@@ -50,12 +53,12 @@ public abstract class RobotState<B extends ProgrammingBoard>{
      *
      * @param newState the next state
      */
-    public void transitionState(RobotState<B> newState) {
+    public void transitionState(RobotState<B, O> newState) {
         this.nextState = newState;
     }
 
     /** Getter method for the next state */
-    public RobotState<B> getNextState() {
+    public RobotState<B, O> getNextState() {
         return nextState;
     }
 }
