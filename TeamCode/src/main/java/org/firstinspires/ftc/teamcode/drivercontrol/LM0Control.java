@@ -44,10 +44,15 @@ public class LM0Control extends DriverControl<LM0Board> {
         currentVoltage = nominalVoltage;
         matchTimer = new ElapsedTime();
         flywheelVelocity = 1650.0;
+    }
+
+    @Override
+    public void start() {
         board.setAimServoPosition(0.825);
         board.setFlywheelMotor1Vel(flywheelVelocity);
         board.setFlywheelMotor2Vel(flywheelVelocity);
     }
+
     @Override
     public void loop() {
         currentVoltage = board.getCachedVoltage();
@@ -95,6 +100,7 @@ public class LM0Control extends DriverControl<LM0Board> {
             if (gamepad2.right_trigger > 0.1) {
                 passthroughPower += 0.05;
             }
+
         } else {
             if (intakePower != 0.0) {
                 intakePower -= 0.10 * Math.signum(intakePower);

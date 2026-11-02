@@ -33,6 +33,8 @@ public abstract class DriverControl<B extends ProgrammingBoard> {
      */
     public abstract void init(Telemetry telemetry, B board, Gamepad gamepad1, Gamepad gamepad2);
 
+    public abstract void start();
+
     /**Executes an iteration of the DriverControl loop.
      * <p>This method should be called from the OpMode's {@link com.qualcomm.robotcore.eventloop.opmode.OpMode#loop() loop() method}</p>
      */

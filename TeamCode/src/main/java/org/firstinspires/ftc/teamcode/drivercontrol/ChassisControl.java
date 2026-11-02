@@ -29,6 +29,10 @@ public class ChassisControl extends DriverControl<ChassisBoard> {
         nominalVoltage = 12.0;
         currentVoltage = nominalVoltage;
     }
+
+    @Override
+    public void start() {}
+
     @Override
     public void loop() {
         currentVoltage = board.getCachedVoltage();

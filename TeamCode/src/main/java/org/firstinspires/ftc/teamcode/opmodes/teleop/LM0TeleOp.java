@@ -27,6 +27,11 @@ public class LM0TeleOp extends OpMode {
     }
 
     @Override
+    public void start() {
+        dc.start();
+    }
+
+    @Override
     public void loop() {
         board.readLoop();
         dc.loop();

@@ -24,6 +24,10 @@ public class TuneControl extends DriverControl<LM0Board>{
         this.gamepad2 = gamepad2;
         this.telemetry = telemetry;
     }
+
+    @Override
+    public void start () {}
+
     @Override
     public void loop() {
         if (gamepad1.aWasPressed()) { driveStop = !driveStop; }
