@@ -21,7 +21,7 @@ public class MinorParkWaitState extends RobotState<LM0Board, LeaveParkAutoBlue> 
 
     @Override
     public void onStateLoop() {
-        telemetry.addData("Time Remaining", transitionTimer.seconds());
+        telemetry.addData("Time Remaining", transitionTime - transitionTimer.seconds());
         if (transitionTimer.seconds() > transitionTime) {
             transitionState(new MinorParkState());
         }
