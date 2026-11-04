@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.mechanisms.ChassisBoard;
 import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
 
 public class LM0Control extends DriverControl<LM0Board> {

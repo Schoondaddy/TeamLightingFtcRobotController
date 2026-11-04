@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.drivercontrol.ChassisControl;
 import org.firstinspires.ftc.teamcode.drivercontrol.DriverControl;
 import org.firstinspires.ftc.teamcode.mechanisms.ChassisBoard;
 
+@Disabled
 @TeleOp
 public class ChassisTeleOp extends OpMode {
     /** The hardware the TeleOp uses */

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.autonomous;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.ivy.Scheduler;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.states.StateCategory;
 import org.firstinspires.ftc.teamcode.states.StateMachine;
 import org.firstinspires.ftc.teamcode.states.drive.MinorParkWaitState;
 
+@Autonomous
 public class LeaveParkAutoBlue extends OpMode {
     public final boolean allianceFlip = false;
     public Follower follower;
