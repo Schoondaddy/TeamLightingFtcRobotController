@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.states.StateCategory;
 import org.firstinspires.ftc.teamcode.states.StateMachine;
+import org.firstinspires.ftc.teamcode.states.drive.MinorParkWaitState;
 
 @Autonomous
 public class LeaveParkAutoBlue extends OpMode {
@@ -33,6 +34,7 @@ public class LeaveParkAutoBlue extends OpMode {
         board = new LM0Board();
         board.init(hardwareMap);
         driveSM = new StateMachine<>(this, telemetry, board, gamepad1, gamepad2, StateCategory.DRIVE);
+        driveSM.init(new MinorParkWaitState());
     }
 
     @Override
