@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.states.RobotState;
 
 public class MinorParkWaitState extends RobotState<LM0Board, LeaveParkAutoBlue> {
     ElapsedTime transitionTimer;
-    double transitionTime = 0.0;
+    double transitionTime = 3.0;
     public MinorParkWaitState() {
         super();
 
@@ -17,10 +17,11 @@ public class MinorParkWaitState extends RobotState<LM0Board, LeaveParkAutoBlue> 
     @Override
     public void onStateStart() {
         transitionTimer = new ElapsedTime();
-    }
+      }
 
     @Override
     public void onStateLoop() {
+        telemetry.addData("Time Remaining", transitionTimer.seconds());
         if (transitionTimer.seconds() > transitionTime) {
             transitionState(new MinorParkState());
         }
