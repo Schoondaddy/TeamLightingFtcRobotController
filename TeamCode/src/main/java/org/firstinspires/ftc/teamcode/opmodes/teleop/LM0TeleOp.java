@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -36,6 +37,9 @@ public class LM0TeleOp extends OpMode {
         board.readLoop();
         dc.loop();
         board.writeLoop();
+        Pose pedroPose = board.getCurrentPedroPose();
+        telemetry.addData("X", pedroPose.x());
+        telemetry.addData("Y", pedroPose.y());
     }
 
 }
