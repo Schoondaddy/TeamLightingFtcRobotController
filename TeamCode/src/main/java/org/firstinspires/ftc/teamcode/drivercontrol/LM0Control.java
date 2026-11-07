@@ -9,8 +9,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
+import org.firstinspires.ftc.teamcode.opmodes.teleop.LM0TeleOp;
 
-public class LM0Control extends DriverControl<LM0Board> {
+public class LM0Control extends DriverControl<LM0Board, LM0TeleOp> {
     /** Toggles Slow Mode */
     private boolean slowMode;
     /**Toggles the second driver's override fast mode */
@@ -30,7 +31,7 @@ public class LM0Control extends DriverControl<LM0Board> {
 
     public ElapsedTime matchTimer;
     @Override
-    public void init(Telemetry telemetry, LM0Board board, Gamepad gamepad1, Gamepad gamepad2) {
+    public void init(Telemetry telemetry, LM0Board board, LM0TeleOp teleOp, Gamepad gamepad1, Gamepad gamepad2) {
         this.board = board;
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;

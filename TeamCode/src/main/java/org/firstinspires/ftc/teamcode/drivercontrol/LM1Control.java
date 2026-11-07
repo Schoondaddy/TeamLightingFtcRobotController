@@ -1,0 +1,229 @@
+package org.firstinspires.ftc.teamcode.drivercontrol;
+
+import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.applyDeadzone;
+import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.multiAbsMax;
+import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.quadraticScale;
+
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
+import org.firstinspires.ftc.teamcode.opmodes.teleop.LM0TeleOp;
+import org.firstinspires.ftc.teamcode.states.RobotState;
+import org.firstinspires.ftc.teamcode.states.StateCategory;
+import org.firstinspires.ftc.teamcode.states.StateMachine;
+import org.firstinspires.ftc.teamcode.states.intakepassthrough.IntakeForward;
+import org.firstinspires.ftc.teamcode.states.intakepassthrough.IntakePassthrough;
+import org.firstinspires.ftc.teamcode.states.intakepassthrough.IntakePassthroughForward;
+import org.firstinspires.ftc.teamcode.states.intakepassthrough.IntakePassthroughIdle;
+import org.firstinspires.ftc.teamcode.states.intakepassthrough.IntakePassthroughReverse;
+import org.firstinspires.ftc.teamcode.states.intakepassthrough.IntakePassthroughState;
+import org.firstinspires.ftc.teamcode.states.intakepassthrough.IntakeReverse;
+
+import java.util.HashMap;
+
+public class LM1Control extends DriverControl<LM0Board, LM0TeleOp> {
+    /** Toggles Slow Mode */
+    private StateMachine<LM0Board, LM0TeleOp> intakePassthroughStateMachine;
+    public HashMap<IntakePassthrough, IntakePassthroughState> IPStatesMap;
+    private boolean slowMode;
+    /**Toggles the second driver's override fast mode */
+    private boolean fastMode;
+    /** The mult applied to motor power when Slow Mode is toggled */
+    private double slowModeMult;
+    private boolean killSwitch;
+    /** The amount of time (nanoseconds) the touchpad needs to be held in order to flip the kill switch*/
+    private double killSwitchHoldTime;
+    /** The time stamp (nanoseconds) of when the touchpad began being pressed. -1.0 if touchpad is not currently being pressed*/
+    private double killSwitchPressedTime;
+    /** The theoretical voltage the robot should have */
+    private double nominalVoltage;
+    /** The actual voltage the robot has */
+    private double currentVoltage;
+    private double flywheelVelocity;
+
+    public ElapsedTime matchTimer;
+    @Override
+    public void init(Telemetry telemetry, LM0Board board, LM0TeleOp opMode, Gamepad gamepad1, Gamepad gamepad2) {
+        this.board = board;
+        this.opMode = opMode;
+        this.gamepad1 = gamepad1;
+        this.gamepad2 = gamepad2;
+        this.telemetry = telemetry;
+
+        IPStatesMap.put(IntakePassthrough.INTAKE_PASSTHROUGH_IDLE, new IntakePassthroughIdle());
+        IPStatesMap.put(IntakePassthrough.INTAKE_PASSTHROUGH_FORWARD, new IntakePassthroughForward());
+        IPStatesMap.put(IntakePassthrough.INTAKE_PASSTHROUGH_REVERSE, new IntakePassthroughReverse());
+        IPStatesMap.put(IntakePassthrough.INTAKE_FORWARD, new IntakeForward());
+        IPStatesMap.put(IntakePassthrough.INTAKE_REVERSE, new IntakeReverse());
+
+        intakePassthroughStateMachine = new StateMachine(opMode, telemetry, board, gamepad1, gamepad2, StateCategory.INTAKE_PASSTHROUGH);
+        intakePassthroughStateMachine.init(IPStatesMap.get(IntakePassthrough.INTAKE_PASSTHROUGH_IDLE));
+
+        slowMode = false;
+        slowModeMult = 0.33;
+        killSwitch = false;
+        killSwitchHoldTime = 3.0;
+        killSwitchPressedTime = -1.0;
+        nominalVoltage = 12.0;
+        currentVoltage = nominalVoltage;
+        matchTimer = new ElapsedTime();
+        flywheelVelocity = 1650.0;
+    }
+
+    @Override
+    public void start() {
+        board.setAimServoPosition(0.825);
+        board.setFlywheelMotor1Vel(flywheelVelocity);
+        board.setFlywheelMotor2Vel(flywheelVelocity);
+    }
+
+    @Override
+    public void loop() {
+        currentVoltage = board.getCachedVoltage();
+
+        if (gamepad1.yWasPressed()) { //slow mode
+            slowMode = !slowMode;
+        }
+        if (gamepad1.leftTriggerWasPressed() || gamepad1.leftTriggerWasReleased()) { //Hold mode switch
+            slowMode = !slowMode;
+        }
+        handleDrivetrain();
+
+        if (gamepad2.touchpad) { //Kill switch
+            telemetry.addData("Pressed time", matchTimer.time() - killSwitchPressedTime);
+            if (killSwitchPressedTime == -1.0) {
+                killSwitchPressedTime = matchTimer.time();
+            } else if (matchTimer.time() - killSwitchPressedTime >= killSwitchHoldTime) {
+                board.flipKillSwitch();
+                killSwitch = !killSwitch;
+                if (flywheelVelocity != 0.0) {
+                    flywheelVelocity = 0.0;
+                } else {
+                    flywheelVelocity = 1650.0;
+                }
+                board.setFlywheelMotor1Vel(flywheelVelocity);
+                board.setFlywheelMotor2Vel(flywheelVelocity);
+
+                gamepad1.rumbleBlips(3);
+                gamepad2.rumbleBlips(3);
+                killSwitchPressedTime = -1.0;
+            }
+
+        } else if (killSwitchPressedTime != -1.0){
+            killSwitchPressedTime = -1.0;
+        }
+
+        if (gamepad1.leftTriggerWasPressed() || gamepad1.rightTriggerWasPressed()) {
+            intakePassthroughStateMachine.getCurrentState().transitionState(IPStatesMap.get(IntakePassthrough.INTAKE_PASSTHROUGH_FORWARD));
+        } else if (gamepad1.leftTriggerWasPressed()) {
+            intakePassthroughStateMachine.getCurrentState().transitionState(IPStatesMap.get(IntakePassthrough.INTAKE_PASSTHROUGH_REVERSE));
+        } else if (gamepad2.rightBumperWasPressed()) {
+            intakePassthroughStateMachine.getCurrentState().transitionState(IPStatesMap.get(IntakePassthrough.INTAKE_FORWARD));
+        } else if (gamepad2.leftBumperWasPressed()) {
+            intakePassthroughStateMachine.getCurrentState().transitionState(IPStatesMap.get(IntakePassthrough.INTAKE_REVERSE));
+        }
+
+        telemetry.addData("TPS: ", board.getFlywheelMotor1Vel());
+
+
+        if (killSwitch) {
+            board.setBlockerServoPower(0.0);
+        } else if (gamepad2.right_trigger_pressed ) { //Launch
+            board.setBlockerServoPower(1.0);
+        } else {
+            board.setBlockerServoPower(-1.0);
+        }
+        /*
+        if (gamepad2.right_trigger < 0.1) {
+            board.setFlywheelMotor2Vel(0.0);
+            board.setFlywheelMotor1Vel(0.0);
+            board.setBlockerServoPower(0.0);
+        } else {
+            if (board.getFlywheelMotor1Vel() > 0.9 && board.getFlywheelMotor2Vel() > 0.9) {
+                board.setBlockerServoPower(1.0);
+                board.cachePassthroughMotorPower(0.5);
+            }
+        }
+        */
+
+    }
+
+    /**
+     * Helper method used to handle the drive train and its logic
+     * <p>Applies a deadzone to input, quadratically scales input, compensates for voltage,
+     * normalizes motors, and applies Slow Mode </p>
+     */
+    private void handleDrivetrain() {
+        double axial;
+        double lateral;
+        double yaw;
+        double overrideDeadzone = 0.1;
+        if ((Math.abs(gamepad2.left_stick_x) > overrideDeadzone) || (Math.abs(gamepad2.left_stick_y) > overrideDeadzone) || (Math.abs(gamepad2.right_stick_x) > overrideDeadzone)) {
+            axial = -0.5 * quadraticScale(applyDeadzone(gamepad2.left_stick_y, 0.05));
+            lateral = 0.5 * quadraticScale(applyDeadzone(gamepad2.left_stick_x, 0.05));
+            yaw = 0.5 * quadraticScale(applyDeadzone(gamepad2.right_stick_x, 0.05));
+        } else {
+            axial = -quadraticScale(applyDeadzone(gamepad1.left_stick_y, 0.05));
+            lateral = quadraticScale(applyDeadzone(gamepad1.left_stick_x, 0.05));
+            yaw = quadraticScale(applyDeadzone(gamepad1.right_stick_x, 0.05));
+        }
+        currentVoltage = board.getCachedVoltage();
+
+
+        double flPower = axial + lateral + yaw;
+        double frPower = axial - lateral - yaw;
+        double blPower = axial - lateral + yaw;
+        double brPower = axial + lateral - yaw;
+
+
+        double max = multiAbsMax(flPower, frPower, blPower, brPower);
+
+        if (max  > 1.0) {
+            flPower /= max;
+            frPower /= max;
+            blPower /= max;
+            brPower /= max;
+        }
+
+        flPower = voltageClamp(flPower);
+        frPower = voltageClamp(frPower);
+        blPower = voltageClamp(blPower);
+        brPower = voltageClamp(brPower);
+
+
+
+        if (slowMode) {
+            flPower *= slowModeMult;
+            frPower *= slowModeMult;
+            blPower *= slowModeMult;
+            brPower *= slowModeMult;
+        }
+
+
+        board.cacheFlMotorPower(flPower);
+        board.cacheFrMotorPower(frPower);
+        board.cacheBlMotorPower(blPower);
+        board.cacheBrMotorPower(brPower);
+
+
+
+        telemetry.addData("Front left/Right", "%4.2f, %4.2f", flPower, frPower);
+        telemetry.addData("Back  left/Right", "%4.2f, %4.2f", blPower, brPower);
+        telemetry.addData("Voltage", board.getCachedVoltage());
+    }
+
+
+    /** Adjusts for voltage, scaling up power if voltage is below the norm, scaling down if above
+     *
+     * @param value an input, typically within {@code [-1, -1]}
+     * @return returns the scaled and clamped value
+     */
+    private double voltageClamp(double value) {
+        double compFactor = nominalVoltage / currentVoltage;
+        return Math.min(1.0, Math.max(-1.0, compFactor * value));
+    }
+}
+
+

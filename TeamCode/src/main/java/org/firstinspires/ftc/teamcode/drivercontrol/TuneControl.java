@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.applyDea
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.multiAbsMax;
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.quadraticScale;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -11,14 +12,14 @@ import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
 
 import java.util.ArrayList;
 
-public class TuneControl extends DriverControl<LM0Board>{
+public class TuneControl extends DriverControl<LM0Board, OpMode>{
     ArrayList<Double> xList = new ArrayList<>();
     ArrayList<Double> yList = new ArrayList<>();
     private boolean driveStop;
     private boolean rotateStop;
     private boolean hoodStop;
 
-    public void init(Telemetry telemetry, LM0Board board, Gamepad gamepad1, Gamepad gamepad2) {
+    public void init(Telemetry telemetry, LM0Board board, OpMode opMode, Gamepad gamepad1, Gamepad gamepad2) {
         this.board = board;
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;

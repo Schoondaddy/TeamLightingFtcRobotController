@@ -16,7 +16,7 @@ public class ChassisTeleOp extends OpMode {
     /** The hardware the TeleOp uses */
     ChassisBoard board;
     /** The driver control logic fed the programming board */
-    DriverControl<ChassisBoard> dc;
+    DriverControl<ChassisBoard, OpMode> dc;
     /** The time that has elapsed during the match */
     public ElapsedTime matchTimer;
     @Override
@@ -26,7 +26,7 @@ public class ChassisTeleOp extends OpMode {
         //this is just bare-bones driver control, so no states needed.
         matchTimer = new ElapsedTime();
         dc = new ChassisControl();
-        dc.init(telemetry, board, gamepad1, gamepad2);
+        dc.init(telemetry, board, this, gamepad1, gamepad2);
     }
 
     @Override

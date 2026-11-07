@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.drivercontrol;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.quadraticScale;
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.applyDeadzone;
@@ -8,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;import org.firstinspir
 
 
 /** Handles driver input for the ChassisTeleOp TeleOp, which is used for a robot that is purely the chassis*/
-public class ChassisControl extends DriverControl<ChassisBoard> {
+public class ChassisControl extends DriverControl<ChassisBoard, OpMode> {
     /** Toggles Slow Mode */
     private boolean slowMode;
     /** The mult applied to motor power when Slow Mode is toggled */
@@ -19,7 +20,7 @@ public class ChassisControl extends DriverControl<ChassisBoard> {
     private double currentVoltage;
     @Override
 
-    public void init(Telemetry telemetry, ChassisBoard board, Gamepad gamepad1, Gamepad gamepad2) {
+    public void init(Telemetry telemetry, ChassisBoard board, OpMode opMode, Gamepad gamepad1, Gamepad gamepad2) {
         this.board = board;
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;

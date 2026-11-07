@@ -13,7 +13,7 @@ public class LM0TeleOp extends OpMode {
     /** The hardware the TeleOp uses */
     LM0Board board;
     /** The driver control logic fed the programming board */
-    DriverControl<LM0Board> dc;
+    DriverControl<LM0Board, LM0TeleOp> dc;
     /** The time that has elapsed during the match */
     public ElapsedTime matchTimer;
     @Override
@@ -23,7 +23,7 @@ public class LM0TeleOp extends OpMode {
         //this is just bare-bones driver control, so no states needed.
         matchTimer = new ElapsedTime();
         dc = new LM0Control();
-        dc.init(telemetry, board, gamepad1, gamepad2);
+        dc.init(telemetry, board, this, gamepad1, gamepad2);
     }
 
     @Override
