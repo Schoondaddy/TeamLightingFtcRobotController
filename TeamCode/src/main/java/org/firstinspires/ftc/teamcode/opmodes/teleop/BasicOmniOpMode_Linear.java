@@ -1,4 +1,4 @@
-
+//This is a default auto from First, not integrated into our architecture
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
