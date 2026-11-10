@@ -17,12 +17,15 @@ public class TuneControl extends DriverControl<LM0Board>{
     private boolean driveStop;
     private boolean rotateStop;
     private boolean hoodStop;
+    private double flywheelVel;
+    private double hoodAngle;
 
     public void init(Telemetry telemetry, LM0Board board, Gamepad gamepad1, Gamepad gamepad2) {
         this.board = board;
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
         this.telemetry = telemetry;
+
     }
 
     @Override
@@ -30,8 +33,8 @@ public class TuneControl extends DriverControl<LM0Board>{
 
     @Override
     public void loop() {
-        double flywheelPower = -7007;
-        double hoodAngle = -7007;
+        flywheelVel = -7007;
+         hoodAngle = -7007;
 
 
         board.cacheIntakeMotorPower(0.75);
@@ -45,7 +48,7 @@ public class TuneControl extends DriverControl<LM0Board>{
         if (gamepad1.yWasPressed()) { hoodStop = !hoodStop; }
         
         if (!hoodStop) {hoodAngle = handleHood();}
-        if (!rotateStop) {flywheelPower = handleFWheel();}
+        if (!rotateStop) {flywheelVel = handleFWheel();}
         if (!driveStop) {handleDrivetrain();}
         
         if (gamepad1.startWasPressed()) {
@@ -53,7 +56,7 @@ public class TuneControl extends DriverControl<LM0Board>{
             gamepad1.rumbleBlips(3);
         }
         telemetry.addData("Hood Angle", hoodAngle);
-        telemetry.addData("Flywheel Power", flywheelPower);
+        telemetry.addData("Flywheel Power", flywheelVel);
     }
     private void handleDrivetrain() {
         double axial = -0.5 * quadraticScale(applyDeadzone(gamepad1.left_stick_y, 0.05));
@@ -90,7 +93,6 @@ public class TuneControl extends DriverControl<LM0Board>{
 
     public double handleFWheel() {
         double increment = 25;
-        double flywheelVel = board.getFlywheelMotor1Vel();
         if (gamepad1.dpad_up) {
             flywheelVel += increment;
             board.setFlywheelMotor1Vel(flywheelVel);
@@ -105,16 +107,19 @@ public class TuneControl extends DriverControl<LM0Board>{
 
     public  double handleHood() {
         double increment = 0.03;
-        double hoodAngle = board.getAimServoPosition();
         if (gamepad1.dpad_left) {
             hoodAngle -= increment;
             if (hoodAngle > 0.0) {
                 board.setAimServoPosition(hoodAngle);
+            } else {
+                hoodAngle += increment;
             }
         } else if (gamepad1.dpad_right) {
             hoodAngle += increment;
             if (hoodAngle < 1.0) {
                 board.setAimServoPosition(hoodAngle);
+            } else {
+                hoodAngle -= increment;
             }
         }
         return hoodAngle;
