@@ -52,6 +52,7 @@ public class LM1Control extends DriverControl<LM0Board, LM0TeleOp> {
         this.gamepad2 = gamepad2;
         this.telemetry = telemetry;
 
+        IPStatesMap = new HashMap<IntakePassthrough, IntakePassthroughState>();
         IPStatesMap.put(IntakePassthrough.INTAKE_PASSTHROUGH_IDLE, new IntakePassthroughIdle());
         IPStatesMap.put(IntakePassthrough.INTAKE_PASSTHROUGH_FORWARD, new IntakePassthroughForward());
         IPStatesMap.put(IntakePassthrough.INTAKE_PASSTHROUGH_REVERSE, new IntakePassthroughReverse());
@@ -69,7 +70,7 @@ public class LM1Control extends DriverControl<LM0Board, LM0TeleOp> {
         nominalVoltage = 12.0;
         currentVoltage = nominalVoltage;
         matchTimer = new ElapsedTime();
-        flywheelVelocity = 1650.0;
+        flywheelVelocity = 2300.0;
     }
 
     @Override
@@ -92,6 +93,7 @@ public class LM1Control extends DriverControl<LM0Board, LM0TeleOp> {
         handleDrivetrain();
 
         if (gamepad2.touchpad) { //Kill switch
+            gamepad2.rumbleBlips(3);
             telemetry.addData("Pressed time", matchTimer.time() - killSwitchPressedTime);
             if (killSwitchPressedTime == -1.0) {
                 killSwitchPressedTime = matchTimer.time();
@@ -101,7 +103,7 @@ public class LM1Control extends DriverControl<LM0Board, LM0TeleOp> {
                 if (flywheelVelocity != 0.0) {
                     flywheelVelocity = 0.0;
                 } else {
-                    flywheelVelocity = 1650.0;
+                    flywheelVelocity = 2300.0;
                 }
                 board.setFlywheelMotor1Vel(flywheelVelocity);
                 board.setFlywheelMotor2Vel(flywheelVelocity);
@@ -115,39 +117,37 @@ public class LM1Control extends DriverControl<LM0Board, LM0TeleOp> {
             killSwitchPressedTime = -1.0;
         }
 
-        if (gamepad1.leftTriggerWasPressed() || gamepad1.rightTriggerWasPressed()) {
-            intakePassthroughStateMachine.getCurrentState().transitionState(IPStatesMap.get(IntakePassthrough.INTAKE_PASSTHROUGH_FORWARD));
-        } else if (gamepad1.leftTriggerWasPressed()) {
-            intakePassthroughStateMachine.getCurrentState().transitionState(IPStatesMap.get(IntakePassthrough.INTAKE_PASSTHROUGH_REVERSE));
-        } else if (gamepad2.rightBumperWasPressed()) {
-            intakePassthroughStateMachine.getCurrentState().transitionState(IPStatesMap.get(IntakePassthrough.INTAKE_FORWARD));
-        } else if (gamepad2.leftBumperWasPressed()) {
-            intakePassthroughStateMachine.getCurrentState().transitionState(IPStatesMap.get(IntakePassthrough.INTAKE_REVERSE));
+        IntakePassthrough intendedState;
+        if (gamepad1.left_trigger > 0.1 || gamepad1.right_trigger > 0.1) {
+            intendedState = IntakePassthrough.INTAKE_PASSTHROUGH_FORWARD;
+        } else if (gamepad2.right_bumper) {
+            intendedState = IntakePassthrough.INTAKE_FORWARD;
+        } else if (gamepad1.left_bumper) {
+            intendedState = IntakePassthrough.INTAKE_PASSTHROUGH_REVERSE;
+        } else if (gamepad2.left_bumper) {
+            intendedState = IntakePassthrough.INTAKE_REVERSE;
+        } else {
+            intendedState = IntakePassthrough.INTAKE_PASSTHROUGH_IDLE;
         }
+
+        RobotState<LM0Board, LM0TeleOp> currentState = intakePassthroughStateMachine.getCurrentState();
+        if (currentState != IPStatesMap.get(intendedState)){
+            currentState.transitionState(IPStatesMap.get(intendedState));
+        }
+
+        telemetry.addData("Intended state: ", intendedState.toString());
+        intakePassthroughStateMachine.loop();
 
         telemetry.addData("TPS: ", board.getFlywheelMotor1Vel());
 
 
         if (killSwitch) {
             board.setBlockerServoPower(0.0);
-        } else if (gamepad2.right_trigger_pressed ) { //Launch
+        } else if (gamepad1.right_trigger_pressed ) { //Launch
             board.setBlockerServoPower(1.0);
         } else {
             board.setBlockerServoPower(-1.0);
         }
-        /*
-        if (gamepad2.right_trigger < 0.1) {
-            board.setFlywheelMotor2Vel(0.0);
-            board.setFlywheelMotor1Vel(0.0);
-            board.setBlockerServoPower(0.0);
-        } else {
-            if (board.getFlywheelMotor1Vel() > 0.9 && board.getFlywheelMotor2Vel() > 0.9) {
-                board.setBlockerServoPower(1.0);
-                board.cachePassthroughMotorPower(0.5);
-            }
-        }
-        */
-
     }
 
     /**
@@ -160,15 +160,10 @@ public class LM1Control extends DriverControl<LM0Board, LM0TeleOp> {
         double lateral;
         double yaw;
         double overrideDeadzone = 0.1;
-        if ((Math.abs(gamepad2.left_stick_x) > overrideDeadzone) || (Math.abs(gamepad2.left_stick_y) > overrideDeadzone) || (Math.abs(gamepad2.right_stick_x) > overrideDeadzone)) {
-            axial = -0.5 * quadraticScale(applyDeadzone(gamepad2.left_stick_y, 0.05));
-            lateral = 0.5 * quadraticScale(applyDeadzone(gamepad2.left_stick_x, 0.05));
-            yaw = 0.5 * quadraticScale(applyDeadzone(gamepad2.right_stick_x, 0.05));
-        } else {
-            axial = -quadraticScale(applyDeadzone(gamepad1.left_stick_y, 0.05));
-            lateral = quadraticScale(applyDeadzone(gamepad1.left_stick_x, 0.05));
-            yaw = quadraticScale(applyDeadzone(gamepad1.right_stick_x, 0.05));
-        }
+        axial = -quadraticScale(applyDeadzone(gamepad1.left_stick_y, 0.05));
+        lateral = quadraticScale(applyDeadzone(gamepad1.left_stick_x, 0.05));
+        yaw = quadraticScale(applyDeadzone(gamepad1.right_stick_x, 0.05));
+
         currentVoltage = board.getCachedVoltage();
 
 

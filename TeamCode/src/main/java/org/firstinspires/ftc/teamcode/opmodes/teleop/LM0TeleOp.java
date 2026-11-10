@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drivercontrol.DriverControl;
 import org.firstinspires.ftc.teamcode.drivercontrol.LM0Control;
+import org.firstinspires.ftc.teamcode.drivercontrol.LM1Control;
 import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
 
 @TeleOp
@@ -22,7 +23,7 @@ public class LM0TeleOp extends OpMode {
         board.init(hardwareMap);
         //this is just bare-bones driver control, so no states needed.
         matchTimer = new ElapsedTime();
-        dc = new LM0Control();
+        dc = new LM1Control();
         dc.init(telemetry, board, this, gamepad1, gamepad2);
     }
 
