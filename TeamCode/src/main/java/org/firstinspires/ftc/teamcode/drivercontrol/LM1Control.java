@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.applyDea
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.multiAbsMax;
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.quadraticScale;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -22,6 +23,7 @@ import org.firstinspires.ftc.teamcode.states.intakepassthrough.IntakePassthrough
 import org.firstinspires.ftc.teamcode.states.intakepassthrough.IntakeReverse;
 
 import java.util.HashMap;
+
 
 public class LM1Control extends DriverControl<LM0Board, LM0TeleOp> {
     /** Toggles Slow Mode */
@@ -70,12 +72,12 @@ public class LM1Control extends DriverControl<LM0Board, LM0TeleOp> {
         nominalVoltage = 12.0;
         currentVoltage = nominalVoltage;
         matchTimer = new ElapsedTime();
-        flywheelVelocity = 2300.0;
+        flywheelVelocity = 980.0;
     }
 
     @Override
     public void start() {
-        board.setAimServoPosition(0.825);
+        board.setAimServoPosition(0.66);
         board.setFlywheelMotor1Vel(flywheelVelocity);
         board.setFlywheelMotor2Vel(flywheelVelocity);
     }
@@ -84,12 +86,6 @@ public class LM1Control extends DriverControl<LM0Board, LM0TeleOp> {
     public void loop() {
         currentVoltage = board.getCachedVoltage();
 
-        if (gamepad1.yWasPressed()) { //slow mode
-            slowMode = !slowMode;
-        }
-        if (gamepad1.leftTriggerWasPressed() || gamepad1.leftTriggerWasReleased()) { //Hold mode switch
-            slowMode = !slowMode;
-        }
         handleDrivetrain();
 
         if (gamepad2.touchpad) { //Kill switch
