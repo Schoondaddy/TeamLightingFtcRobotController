@@ -62,7 +62,7 @@ public class LM0Board implements ProgrammingBoard {
     private MotorWrapper frMotor;
     private MotorWrapper blMotor;
     private MotorWrapper brMotor;
-    public DcMotorEx flywheelMotor1;
+    private DcMotorEx flywheelMotor1;
     private DcMotorEx flywheelMotor2;
     private MotorWrapper[] motors;
     private Pose2D currentPose;

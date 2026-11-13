@@ -57,8 +57,8 @@ public class TuneControl extends DriverControl<LM0Board, OpMode>{
 
         if (!driveStop) {handleDrivetrain();}
         if (!intakeStop) {
-            board.cacheIntakeMotorPower(0.6);
-            board.cachePassthroughMotorPower(0.5);
+            board.cacheIntakeMotorPower(0.75);
+            board.cachePassthroughMotorPower(0.75);
             board.setBlockerServoPower(1.0);
         } else {
             board.cacheIntakeMotorPower(0.0);
@@ -78,7 +78,7 @@ public class TuneControl extends DriverControl<LM0Board, OpMode>{
         telemetry.addData("Hood Angle", hoodAngle);
         telemetry.addData("Target FW speed", flywheelVel);
         telemetry.addData("Actual FW speed: ", board.getFlywheelMotor1Vel());
-        telemetry.addData("PID coeffs: ", board.flywheelMotor1.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER).toString());
+        //telemetry.addData("PID coeffs: ", board.flywheelMotor1.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER).toString());
     }
     private void handleDrivetrain() {
         double axial = -0.5 * quadraticScale(applyDeadzone(gamepad1.left_stick_y, 0.05));

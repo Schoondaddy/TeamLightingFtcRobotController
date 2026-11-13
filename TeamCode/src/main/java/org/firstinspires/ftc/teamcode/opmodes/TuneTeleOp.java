@@ -14,7 +14,7 @@ public class TuneTeleOp extends OpMode {
     /** The hardware the TeleOp uses */
     LM0Board board;
     /** The driver control logic fed the programming board */
-    DriverControl<LM0Board> driverControl;
+    DriverControl<LM0Board, OpMode> driverControl;
     /** The time that has elapsed during the match */
     public ElapsedTime matchTimer;
     @Override
@@ -24,7 +24,7 @@ public class TuneTeleOp extends OpMode {
         //this is just bare-bones driver control, so no states needed.
         matchTimer = new ElapsedTime();
         driverControl = new TuneControl();
-        driverControl.init(telemetry, board, gamepad1, gamepad2);
+        driverControl.init(telemetry, board, this ,gamepad1, gamepad2);
     }
 
     @Override
