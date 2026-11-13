@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.applyDea
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.multiAbsMax;
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.quadraticScale;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -15,7 +16,8 @@ public class TuneControl extends DriverControl<LM0Board>{
     ArrayList<Double> xList = new ArrayList<>();
     ArrayList<Double> yList = new ArrayList<>();
     private boolean driveStop;
-    private boolean rotateStop;
+    private boolean intakeStop;
+    private boolean TPSStop;
     private boolean hoodStop;
     private double flywheelVel;
     private double hoodAngle;
@@ -26,37 +28,56 @@ public class TuneControl extends DriverControl<LM0Board>{
         this.gamepad2 = gamepad2;
         this.telemetry = telemetry;
 
+        this.driveStop = false;
+        this.intakeStop = false;
+        this.TPSStop = true;
+        this.hoodStop = true;
+
+        flywheelVel = 980.0;
+        hoodAngle = 0.66;
     }
 
     @Override
-    public void start () {}
+    public void start () {
+        board.setFlywheelMotor1Vel(flywheelVel);
+        board.setFlywheelMotor2Vel(flywheelVel);
+        board.setAimServoPosition(hoodAngle);
+    }
 
     @Override
     public void loop() {
-        flywheelVel = -7007;
-         hoodAngle = -7007;
-
-
-        board.cacheIntakeMotorPower(0.75);
-        board.cachePassthroughMotorPower(0.75);
-        board.setBlockerServoPower(1.0);
-
         if (gamepad1.aWasPressed()) { driveStop = !driveStop; }
 
-        if (gamepad1.xWasPressed()) { rotateStop = !rotateStop; }
+        if (gamepad1.bWasPressed()) { intakeStop = !intakeStop; }
+
+        if (gamepad1.xWasPressed()) { TPSStop = !TPSStop; }
 
         if (gamepad1.yWasPressed()) { hoodStop = !hoodStop; }
-        
-        if (!hoodStop) {hoodAngle = handleHood();}
-        if (!rotateStop) {flywheelVel = handleFWheel();}
+
         if (!driveStop) {handleDrivetrain();}
+        if (!intakeStop) {
+            board.cacheIntakeMotorPower(0.6);
+            board.cachePassthroughMotorPower(0.5);
+            board.setBlockerServoPower(1.0);
+        } else {
+            board.cacheIntakeMotorPower(0.0);
+            board.cachePassthroughMotorPower(0.0);
+            board.setBlockerServoPower(0.0);
+        }
+
+        if (!TPSStop) {flywheelVel = handleFWheel();}
+        if (!hoodStop) {hoodAngle = handleHood();}
+
+
         
         if (gamepad1.startWasPressed()) {
             board.flipKillSwitch();
             gamepad1.rumbleBlips(3);
         }
         telemetry.addData("Hood Angle", hoodAngle);
-        telemetry.addData("Flywheel Power", flywheelVel);
+        telemetry.addData("Target FW speed", flywheelVel);
+        telemetry.addData("Actual FW speed: ", board.getFlywheelMotor1Vel());
+        telemetry.addData("PID coeffs: ", board.flywheelMotor1.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER).toString());
     }
     private void handleDrivetrain() {
         double axial = -0.5 * quadraticScale(applyDeadzone(gamepad1.left_stick_y, 0.05));
@@ -92,22 +113,22 @@ public class TuneControl extends DriverControl<LM0Board>{
     }
 
     public double handleFWheel() {
-        double increment = 25;
+        double increment = 2;
         if (gamepad1.dpad_up) {
             flywheelVel += increment;
             board.setFlywheelMotor1Vel(flywheelVel);
             board.setFlywheelMotor2Vel(flywheelVel);
         } else if (gamepad1.dpad_down) {
             flywheelVel -= increment;
+            board.setFlywheelMotor1Vel(flywheelVel);
             board.setFlywheelMotor2Vel(flywheelVel);
-            board.setFlywheelMotor2Vel(flywheelVel - increment);
         }
         return flywheelVel;
     }
 
     public  double handleHood() {
-        double increment = 0.03;
-        if (gamepad1.dpad_left) {
+        double increment = 0.0025;
+        if (gamepad1.dpad_left) {;
             hoodAngle -= increment;
             if (hoodAngle > 0.0) {
                 board.setAimServoPosition(hoodAngle);

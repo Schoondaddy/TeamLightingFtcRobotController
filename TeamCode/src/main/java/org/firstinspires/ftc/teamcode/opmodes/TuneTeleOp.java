@@ -6,12 +6,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drivercontrol.DriverControl;
-import org.firstinspires.ftc.teamcode.drivercontrol.LM0Control;
 import org.firstinspires.ftc.teamcode.drivercontrol.TuneControl;
 import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
 
 @TeleOp
-public class tuneTeleOp extends OpMode {
+public class TuneTeleOp extends OpMode {
     /** The hardware the TeleOp uses */
     LM0Board board;
     /** The driver control logic fed the programming board */
