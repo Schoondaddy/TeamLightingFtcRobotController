@@ -106,7 +106,8 @@ public class LM0Board implements ProgrammingBoard {
         flywheelMotor2 = hwMap.get(DcMotorEx.class, "flywheel_motor_2");
         flywheelMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
         flywheelMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
-
+        flywheelMotor1.setVelocityPIDFCoefficients(15.0, 0.85, 1.5, 15.0);
+        flywheelMotor2.setVelocityPIDFCoefficients(15.0, 0.85, 1.5, 15.0);
         odoPod = hwMap.get(GoBildaPinpointDriver.class, "odo_pod");
         odoPod.resetPosAndIMU();
 
