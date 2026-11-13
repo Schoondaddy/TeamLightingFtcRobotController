@@ -2,11 +2,15 @@ package org.firstinspires.ftc.teamcode.states;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.robot.Robot;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanisms.ProgrammingBoard;
 
+import java.util.HashMap;
+
 public class StateMachine<B extends ProgrammingBoard, O extends OpMode> {
+    public HashMap<Class<? extends RobotState<B, O>>, RobotState<B,O>> stateCache = new HashMap<>();
     private final O opMode;
     /** FTC telemetry interface used to send data to the Driver Station*/
     private final Telemetry telemetry;
@@ -41,15 +45,19 @@ public class StateMachine<B extends ProgrammingBoard, O extends OpMode> {
      * <p>This method should be called from the OpMode's {@link com.qualcomm.robotcore.eventloop.opmode.OpMode#loop() loop() method}</p>
      */
     public void loop() {
-        RobotState<B, O> nextState = currentState.getNextState();
-
-        if (nextState != currentState) {
-            currentState.onStateEnd();
-
-            currentState = nextState;
-            currentState.initializeState(opMode, telemetry, board, gamepad1, gamepad2);
-
-            currentState.onStateStart();
+        Class<? extends RobotState<B, O>> nextStateClass = currentState.getNextState();
+        if (nextStateClass != currentState.getClass()) {
+            RobotState<B, O> nextState;
+            if (stateCache.get(nextStateClass) == null) {
+                try {
+                    nextState = nextStateClass.getDeclaredConstructor().newInstance();
+                    stateCache.put(nextStateClass, nextState);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                nextState = stateCache.get(nextStateClass);
+            }
         }
 
         currentState.onStateLoop();
