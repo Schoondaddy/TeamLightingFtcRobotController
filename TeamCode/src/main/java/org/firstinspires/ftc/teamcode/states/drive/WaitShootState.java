@@ -17,6 +17,7 @@ public class WaitShootState extends RobotState<LM0Board, ShootLeaveAuto> {
     @Override
     public void onStateStart() {
         transitionTimer = new ElapsedTime();
+        transitionTimer.reset();
     }
 
     @Override
