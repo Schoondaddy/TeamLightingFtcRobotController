@@ -39,6 +39,7 @@ public abstract class RobotState<B extends ProgrammingBoard, O extends OpMode>{
         this.gamepad2 = gamepad2;
         this.board = board;
         this.telemetry = telemetry;
+        this.nextState = this;
     }
 
     /** Called when the state is transitioned into*/

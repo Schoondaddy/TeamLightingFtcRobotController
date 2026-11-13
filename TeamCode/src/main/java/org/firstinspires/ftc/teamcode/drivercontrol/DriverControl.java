@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.drivercontrol;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;import org.firstinspires.ftc.teamcode.mechanisms.ProgrammingBoard;
@@ -9,12 +10,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;import org.firstinspir
  * Abstract class for  classes that handle driver input logic
  * @param <B> The implementation of interface {@link ProgrammingBoard} which is used by subclasses of DriverControl
  */
-public abstract class DriverControl<B extends ProgrammingBoard> {
+public abstract class DriverControl<B extends ProgrammingBoard, O extends OpMode> {
     /** FTC telemetry interface used to send data to the Driver Station */
     protected Telemetry telemetry;
     /** Robot hardware used by a DriverControl subclass */
     protected B board;
-
+    protected O opMode;
     /** First driver gamepad */
     protected Gamepad gamepad1;
     /** Second driver gamepad */
@@ -31,7 +32,7 @@ public abstract class DriverControl<B extends ProgrammingBoard> {
      * @param gamepad1 first driver gamepad
      * @param gamepad2 second driver gamepad
      */
-    public abstract void init(Telemetry telemetry, B board, Gamepad gamepad1, Gamepad gamepad2);
+    public abstract void init(Telemetry telemetry, B board, O opMode, Gamepad gamepad1, Gamepad gamepad2);
 
     public abstract void start();
 

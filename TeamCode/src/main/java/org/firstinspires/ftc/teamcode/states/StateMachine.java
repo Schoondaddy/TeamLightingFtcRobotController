@@ -54,4 +54,8 @@ public class StateMachine<B extends ProgrammingBoard, O extends OpMode> {
 
         currentState.onStateLoop();
     }
+
+    public RobotState<B, O> getCurrentState() {
+        return currentState;
+    }
 }

@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.multiAbs
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.quadraticScale;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -12,7 +13,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
 
 import java.util.ArrayList;
 
-public class TuneControl extends DriverControl<LM0Board>{
+public class TuneControl extends DriverControl<LM0Board, OpMode>{
     ArrayList<Double> xList = new ArrayList<>();
     ArrayList<Double> yList = new ArrayList<>();
     private boolean driveStop;
@@ -22,7 +23,7 @@ public class TuneControl extends DriverControl<LM0Board>{
     private double flywheelVel;
     private double hoodAngle;
 
-    public void init(Telemetry telemetry, LM0Board board, Gamepad gamepad1, Gamepad gamepad2) {
+    public void init(Telemetry telemetry, LM0Board board, OpMode opMode, Gamepad gamepad1, Gamepad gamepad2) {
         this.board = board;
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
@@ -69,7 +70,7 @@ public class TuneControl extends DriverControl<LM0Board>{
         if (!hoodStop) {hoodAngle = handleHood();}
 
 
-        
+
         if (gamepad1.startWasPressed()) {
             board.flipKillSwitch();
             gamepad1.rumbleBlips(3);
