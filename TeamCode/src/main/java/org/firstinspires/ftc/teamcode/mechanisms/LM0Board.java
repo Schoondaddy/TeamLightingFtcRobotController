@@ -53,7 +53,9 @@ public class LM0Board implements ProgrammingBoard {
     private ElapsedTime voltageTimer;
     private VoltageSensor voltageSensor;
     private double cachedVoltage = 12;
-
+    //private Servo rotationServo1;
+    //private Servo rotationServo2;
+    //private Servo rotationServo3;
     private Servo aimServo;
     private CRServo blockerServo;
     private MotorWrapper intakeMotor;
@@ -106,7 +108,6 @@ public class LM0Board implements ProgrammingBoard {
         flywheelMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
         flywheelMotor1.setVelocityPIDFCoefficients(15.0, 0.85, 1.5, 15.0);
         flywheelMotor2.setVelocityPIDFCoefficients(15.0, 0.85, 1.5, 15.0);
-
         odoPod = hwMap.get(GoBildaPinpointDriver.class, "odo_pod");
         odoPod.resetPosAndIMU();
 
