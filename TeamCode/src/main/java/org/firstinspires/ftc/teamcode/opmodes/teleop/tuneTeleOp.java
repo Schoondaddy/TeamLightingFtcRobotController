@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drivercontrol.DriverControl;
-import org.firstinspires.ftc.teamcode.drivercontrol.LM0Control;
 import org.firstinspires.ftc.teamcode.drivercontrol.TuneControl;
 import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
 
