@@ -12,9 +12,7 @@ public abstract class RobotState<B extends ProgrammingBoard, O extends OpMode>{
     protected O opMode;
     public final StateCategory stateCategory;
     /** The state that will run in the next loop iteration; is the current state when not transitioning states */
-    @SuppressWarnings("unchecked")
-    protected Class<? extends RobotState<B, O>> nextState =
-            (Class<? extends RobotState<B, O>>) this.getClass();
+    protected Class<? extends RobotState<B, O>> nextStateClass;
 
     /** First driver gamepad*/
     protected Gamepad gamepad1;
@@ -42,7 +40,9 @@ public abstract class RobotState<B extends ProgrammingBoard, O extends OpMode>{
         this.gamepad2 = gamepad2;
         this.board = board;
         this.telemetry = telemetry;
-        this.nextState = this;
+        @SuppressWarnings("unchecked")
+        protected Class<? extends RobotState<B, O>> nextStateClass =
+            (Class<? extends RobotState<B, O>>) this.getClass();
     }
 
     /** Called when the state is transitioned into*/
@@ -58,11 +58,11 @@ public abstract class RobotState<B extends ProgrammingBoard, O extends OpMode>{
      * @param stateClass the next state's class
      */
     public void transitionState(Class<? extends RobotState<B, O>> stateClass) {
-        this.nextState = stateClass;
+        this.nextStateClass = stateClass;
     }
 
     /** Getter method for the next state */
     public Class<? extends RobotState<B, O>> getNextState() {
-        return nextState;
+        return nextStateClass;
     }
 }
