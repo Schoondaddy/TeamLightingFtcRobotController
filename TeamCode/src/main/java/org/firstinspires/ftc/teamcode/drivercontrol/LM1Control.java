@@ -28,7 +28,7 @@ import java.util.HashMap;
 public class LM1Control extends DriverControl<LM0Board, LM0TeleOp> {
     /** Toggles Slow Mode */
     private StateMachine<LM0Board, LM0TeleOp> intakePassthroughStateMachine;
-    public HashMap<IntakePassthrough, IntakePassthroughState> IPStatesMap;
+    public HashMap<IntakePassthrough, Class<? extends IntakePassthroughState>> IPStatesMap;
     private boolean slowMode;
     /**Toggles the second driver's override fast mode */
     private boolean fastMode;
@@ -54,15 +54,15 @@ public class LM1Control extends DriverControl<LM0Board, LM0TeleOp> {
         this.gamepad2 = gamepad2;
         this.telemetry = telemetry;
 
-        IPStatesMap = new HashMap<IntakePassthrough, IntakePassthroughState>();
-        IPStatesMap.put(IntakePassthrough.INTAKE_PASSTHROUGH_IDLE, new IntakePassthroughIdle());
-        IPStatesMap.put(IntakePassthrough.INTAKE_PASSTHROUGH_FORWARD, new IntakePassthroughForward());
-        IPStatesMap.put(IntakePassthrough.INTAKE_PASSTHROUGH_REVERSE, new IntakePassthroughReverse());
-        IPStatesMap.put(IntakePassthrough.INTAKE_FORWARD, new IntakeForward());
-        IPStatesMap.put(IntakePassthrough.INTAKE_REVERSE, new IntakeReverse());
+        IPStatesMap = new HashMap<>();
+        IPStatesMap.put(IntakePassthrough.INTAKE_PASSTHROUGH_IDLE, IntakePassthroughIdle.class);
+        IPStatesMap.put(IntakePassthrough.INTAKE_PASSTHROUGH_FORWARD, IntakePassthroughForward.class);
+        IPStatesMap.put(IntakePassthrough.INTAKE_PASSTHROUGH_REVERSE, IntakePassthroughReverse.class);
+        IPStatesMap.put(IntakePassthrough.INTAKE_FORWARD,  IntakeForward.class);
+        IPStatesMap.put(IntakePassthrough.INTAKE_REVERSE,  IntakeReverse.class);
 
-        intakePassthroughStateMachine = new StateMachine(opMode, telemetry, board, gamepad1, gamepad2, StateCategory.INTAKE_PASSTHROUGH);
-        intakePassthroughStateMachine.init(IPStatesMap.get(IntakePassthrough.INTAKE_PASSTHROUGH_IDLE));
+        intakePassthroughStateMachine = new StateMachine<>(opMode, telemetry, board, gamepad1, gamepad2, StateCategory.INTAKE_PASSTHROUGH);
+        intakePassthroughStateMachine.init(new IntakePassthroughIdle());
 
         slowMode = false;
         slowModeMult = 0.33;
@@ -127,7 +127,7 @@ public class LM1Control extends DriverControl<LM0Board, LM0TeleOp> {
         }
 
         RobotState<LM0Board, LM0TeleOp> currentState = intakePassthroughStateMachine.getCurrentState();
-        if (currentState != IPStatesMap.get(intendedState)){
+        if (currentState.getClass() != IPStatesMap.get(intendedState)){
             currentState.transitionState(IPStatesMap.get(intendedState));
         }
 
