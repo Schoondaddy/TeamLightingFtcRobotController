@@ -116,20 +116,21 @@ public class LM1Control extends DriverControl<LM0Board, LM0TeleOp> {
         IntakePassthrough intendedState;
         if (gamepad1.left_trigger > 0.1 || gamepad1.right_trigger > 0.1) {
             intendedState = IntakePassthrough.INTAKE_PASSTHROUGH_FORWARD;
+            currentState.transitionState(IntakePassthroughForward.class);
         } else if (gamepad2.right_bumper) {
             intendedState = IntakePassthrough.INTAKE_FORWARD;
+            currentState.transitionState(IntakeForward.class);
         } else if (gamepad1.left_bumper) {
             intendedState = IntakePassthrough.INTAKE_PASSTHROUGH_REVERSE;
+            currentState.transitionState(IntakePassthroughReverse.class);
         } else if (gamepad2.left_bumper) {
             intendedState = IntakePassthrough.INTAKE_REVERSE;
+            currentState.transitionState(IntakeReverse.class);
         } else {
             intendedState = IntakePassthrough.INTAKE_PASSTHROUGH_IDLE;
+            currentState.transitionState(IntakePassthroughIdle.class);
         }
 
-        RobotState<LM0Board, LM0TeleOp> currentState = intakePassthroughStateMachine.getCurrentState();
-        if (currentState.getClass() != IPStatesMap.get(intendedState)){
-            currentState.transitionState(IPStatesMap.get(intendedState));
-        }
 
         telemetry.addData("Intended state: ", intendedState.toString());
         intakePassthroughStateMachine.loop();
