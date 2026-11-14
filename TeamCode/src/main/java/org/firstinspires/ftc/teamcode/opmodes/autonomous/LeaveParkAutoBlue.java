@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.states.StateCategory;
 import org.firstinspires.ftc.teamcode.states.StateMachine;
 import org.firstinspires.ftc.teamcode.states.drive.MinorParkWaitState;
 
+@Disabled
 @Autonomous
 public class LeaveParkAutoBlue extends OpMode {
     public final boolean allianceFlip = false;
