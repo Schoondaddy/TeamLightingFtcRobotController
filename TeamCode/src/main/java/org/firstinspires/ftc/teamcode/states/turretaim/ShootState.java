@@ -24,7 +24,7 @@ public class ShootState extends RobotState<LM0Board, ShootLeaveAuto> {
     @Override
     public void onStateLoop() {
         if (stateTimer.seconds() > 3) {
-            board.setBlockerServoPower(1.0);
+            board.setBlockerServoPower(0.5);
             board.cachePassthroughMotorPower(1);
             board.cacheIntakeMotorPower(0.75);
         }
