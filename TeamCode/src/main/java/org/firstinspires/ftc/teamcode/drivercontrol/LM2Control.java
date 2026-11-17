@@ -30,11 +30,6 @@ public class LM2Control extends DriverControl<LM0Board, LM0TeleOp> {
     /** Toggles Slow Mode */
     private StateMachine<LM0Board, LM0TeleOp> intakePassthroughStateMachine;
     public HashMap<IntakePassthrough, Class<? extends IntakePassthroughState>> IPStatesMap;
-    private boolean slowMode;
-    /**Toggles the second driver's override fast mode */
-    private boolean fastMode;
-    /** The mult applied to motor power when Slow Mode is toggled */
-    private double slowModeMult;
     private boolean killSwitch;
     /** The amount of time (nanoseconds) the touchpad needs to be held in order to flip the kill switch*/
     private double killSwitchHoldTime;
@@ -45,6 +40,8 @@ public class LM2Control extends DriverControl<LM0Board, LM0TeleOp> {
     /** The actual voltage the robot has */
     private double currentVoltage;
     private double flywheelVelocity;
+    /** Toggles field centric drive */
+    private boolean fieldCentric;
 
     public ElapsedTime matchTimer;
     @Override
@@ -65,8 +62,6 @@ public class LM2Control extends DriverControl<LM0Board, LM0TeleOp> {
         intakePassthroughStateMachine = new StateMachine<>(opMode, telemetry, board, gamepad1, gamepad2, StateCategory.INTAKE_PASSTHROUGH);
         intakePassthroughStateMachine.init(new IntakePassthroughIdle());
 
-        slowMode = false;
-        slowModeMult = 0.33;
         killSwitch = false;
         killSwitchHoldTime = 3.0;
         killSwitchPressedTime = -1.0;
@@ -74,6 +69,7 @@ public class LM2Control extends DriverControl<LM0Board, LM0TeleOp> {
         currentVoltage = nominalVoltage;
         matchTimer = new ElapsedTime();
         flywheelVelocity = 980.0;
+        fieldCentric = true;
     }
 
     @Override
@@ -97,13 +93,13 @@ public class LM2Control extends DriverControl<LM0Board, LM0TeleOp> {
             } else if (matchTimer.time() - killSwitchPressedTime >= killSwitchHoldTime) {
                 board.flipKillSwitch();
                 killSwitch = !killSwitch;
-                if (flywheelVelocity != 0.0) {
-                    flywheelVelocity = 0.0;
+                if (killSwitch) {
+                    board.setFlywheelMotor1Vel(0.0);
+                    board.setFlywheelMotor2Vel(0.0);
                 } else {
-                    flywheelVelocity = 2300.0;
+                    board.setFlywheelMotor1Vel(flywheelVelocity);
+                    board.setFlywheelMotor2Vel(flywheelVelocity);
                 }
-                board.setFlywheelMotor1Vel(flywheelVelocity);
-                board.setFlywheelMotor2Vel(flywheelVelocity);
 
                 gamepad1.rumbleBlips(3);
                 gamepad2.rumbleBlips(3);
@@ -163,8 +159,13 @@ public class LM2Control extends DriverControl<LM0Board, LM0TeleOp> {
         lateral = quadraticScale(applyDeadzone(gamepad1.left_stick_x, 0.05));
         yaw = quadraticScale(applyDeadzone(gamepad1.right_stick_x, 0.05));
 
-        currentVoltage = board.getCachedVoltage();
+        if (fieldCentric) {
+            double theta = -board.getCurrentPedroPose().heading();
+            lateral = lateral * Math.cos(theta) - axial * Math.sin(theta);
+            axial = lateral * Math.sin(theta) + axial * Math.cos(theta);
+        }
 
+        currentVoltage = board.getCachedVoltage();
 
         double flPower = axial + lateral + yaw;
         double frPower = axial - lateral - yaw;
@@ -185,16 +186,6 @@ public class LM2Control extends DriverControl<LM0Board, LM0TeleOp> {
         frPower = voltageClamp(frPower);
         blPower = voltageClamp(blPower);
         brPower = voltageClamp(brPower);
-
-
-
-        if (slowMode) {
-            flPower *= slowModeMult;
-            frPower *= slowModeMult;
-            blPower *= slowModeMult;
-            brPower *= slowModeMult;
-        }
-
 
         board.cacheFlMotorPower(flPower);
         board.cacheFrMotorPower(frPower);
