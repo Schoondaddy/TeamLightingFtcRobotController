@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.states.StateCategory;
 /** Intake state for intake and passthrough*/
 public class IntakePassthroughForward extends IntakePassthroughState {
     public IntakePassthroughForward() {
-        super(0.5, 0.5, 0.4, 0.10);
+        super(0.75, 0.75, 0.4, 0.10);
     }
 
     @Override

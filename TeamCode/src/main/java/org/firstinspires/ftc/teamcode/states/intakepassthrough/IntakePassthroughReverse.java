@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.states.StateCategory;
 /** Eject state for intake and passthrough*/
 public class IntakePassthroughReverse extends IntakePassthroughState {
     public IntakePassthroughReverse() {
-        super(-0.5, -0.5, 0.4, 0.10);
+        super(-0.75, -0.75, 0.4, 0.10);
     }
 
     @Override
