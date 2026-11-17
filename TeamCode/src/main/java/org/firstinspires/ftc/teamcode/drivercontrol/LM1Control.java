@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.quadrati
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -112,7 +113,7 @@ public class LM1Control extends DriverControl<LM0Board, LM0TeleOp> {
         } else if (killSwitchPressedTime != -1.0){
             killSwitchPressedTime = -1.0;
         }
-
+        RobotState<LM0Board, LM0TeleOp> currentState = intakePassthroughStateMachine.getCurrentState();
         IntakePassthrough intendedState;
         if (gamepad1.left_trigger > 0.1 || gamepad1.right_trigger > 0.1) {
             intendedState = IntakePassthrough.INTAKE_PASSTHROUGH_FORWARD;
@@ -133,6 +134,7 @@ public class LM1Control extends DriverControl<LM0Board, LM0TeleOp> {
 
 
         telemetry.addData("Intended state: ", intendedState.toString());
+        telemetry.addData("Actual State: ", currentState);
         intakePassthroughStateMachine.loop();
 
         telemetry.addData("TPS: ", board.getFlywheelMotor1Vel());
