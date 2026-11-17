@@ -40,8 +40,7 @@ public abstract class RobotState<B extends ProgrammingBoard, O extends OpMode>{
         this.gamepad2 = gamepad2;
         this.board = board;
         this.telemetry = telemetry;
-        @SuppressWarnings("unchecked")
-        protected Class<? extends RobotState<B, O>> nextStateClass =
+        this.nextStateClass =
             (Class<? extends RobotState<B, O>>) this.getClass();
     }
 

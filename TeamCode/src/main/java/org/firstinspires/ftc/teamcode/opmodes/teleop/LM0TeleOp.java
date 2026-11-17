@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.drivercontrol.DriverControl;
 import org.firstinspires.ftc.teamcode.drivercontrol.LM0Control;
 import org.firstinspires.ftc.teamcode.drivercontrol.LM1Control;
 import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
+import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 @TeleOp
 public class LM0TeleOp extends OpMode {
@@ -18,8 +20,11 @@ public class LM0TeleOp extends OpMode {
     DriverControl<LM0Board, LM0TeleOp> dc;
     /** The time that has elapsed during the match */
     public ElapsedTime matchTimer;
+    public Follower follower;
+
     @Override
     public void init() {
+        follower = Constants.create(hardwareMap);
         board = new LM0Board();
         board.init(hardwareMap);
         //this is just bare-bones driver control, so no states needed.

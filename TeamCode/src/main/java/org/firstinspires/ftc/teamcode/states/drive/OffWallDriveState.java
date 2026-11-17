@@ -19,7 +19,7 @@ public class OffWallDriveState extends RobotState<LM0Board, ShootLeaveAuto> {
 
     @Override
     public void onStateLoop() {
-        if (stateTimer.seconds() < 5.3 && stateTimer.seconds() > 5) {
+        if (stateTimer.seconds() < 10.5 && stateTimer.seconds() > 10) {
             board.cacheFlMotorPower(0.25);
             board.cacheFrMotorPower(0.25);
             board.cacheBlMotorPower(0.25);

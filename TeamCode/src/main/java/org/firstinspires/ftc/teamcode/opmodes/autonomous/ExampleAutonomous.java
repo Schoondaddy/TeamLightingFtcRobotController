@@ -27,6 +27,7 @@ public class ExampleAutonomous extends OpMode {
         sm = new StateMachine<>(this, telemetry, board, gamepad1, gamepad2, StateCategory.NONE);
     }
 
+
     @Override
     public void loop() {
         board.readLoop();
