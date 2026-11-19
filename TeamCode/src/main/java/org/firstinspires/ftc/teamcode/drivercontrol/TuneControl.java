@@ -8,10 +8,11 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.mechanisms.LM2Board;
 
 import java.util.ArrayList;
 
-public class TuneControl extends DriverControl<LM0Board, OpMode>{
+public class TuneControl extends DriverControl<LM2Board, OpMode>{
     ArrayList<Double> xList = new ArrayList<>();
     ArrayList<Double> yList = new ArrayList<>();
     private boolean driveStop;
@@ -21,7 +22,7 @@ public class TuneControl extends DriverControl<LM0Board, OpMode>{
     private double flywheelVel;
     private double hoodAngle;
 
-    public void init(Telemetry telemetry, LM0Board board, OpMode opMode, Gamepad gamepad1, Gamepad gamepad2) {
+    public void init(Telemetry telemetry, LM2Board board, OpMode opMode, Gamepad gamepad1, Gamepad gamepad2) {
         this.board = board;
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
