@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.mechanisms.LM2Board;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.states.StateCategory;
 import org.firstinspires.ftc.teamcode.states.StateMachine;
@@ -19,10 +20,10 @@ public class ShootLeaveAuto extends OpMode {
     public Follower follower;
     public PoseFactory p = PoseFactory.degrees();
     /** The hardware the Autonomous uses */
-    LM0Board board;
+    LM2Board board;
     /** The state machine */
-    StateMachine<LM0Board, ShootLeaveAuto> driveSM;
-    StateMachine<LM0Board, ShootLeaveAuto> shootSM;
+    StateMachine<LM2Board, ShootLeaveAuto> driveSM;
+    StateMachine<LM2Board, ShootLeaveAuto> shootSM;
     /** The time that has elapsed during the match */
     public ElapsedTime matchTimer;
     @Override
@@ -32,7 +33,7 @@ public class ShootLeaveAuto extends OpMode {
         }
         Scheduler.reset();
         follower = Constants.create(hardwareMap);
-        board = new LM0Board();
+        board = new LM2Board();
         board.init(hardwareMap);
         driveSM = new StateMachine<>(this, telemetry, board, gamepad1, gamepad2, StateCategory.DRIVE);
         shootSM = new StateMachine<>(this, telemetry, board, gamepad1, gamepad2, StateCategory.TURRET_AIM);

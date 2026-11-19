@@ -4,15 +4,17 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.mechanisms.LM2Board;
+
 @Autonomous
 public class LeaveParkSimple extends OpMode {
-    private LM0Board board;
+    private LM2Board board;
     private ElapsedTime matchTimer;
     private double timeStarted;
 
     @Override
     public void init() {
-        board = new LM0Board();
+        board = new LM2Board();
         board.init(hardwareMap);
         matchTimer = new ElapsedTime();
     }

@@ -7,18 +7,19 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drivercontrol.DriverControl;
 import org.firstinspires.ftc.teamcode.drivercontrol.TuneControl;
+import org.firstinspires.ftc.teamcode.mechanisms.LM2Board;
 
 @TeleOp
 public class TuneTeleOp extends OpMode {
     /** The hardware the TeleOp uses */
-    LM0Board board;
+    LM2Board board;
     /** The driver control logic fed the programming board */
-    DriverControl<LM0Board, OpMode> driverControl;
+    DriverControl<LM2Board, OpMode> driverControl;
     /** The time that has elapsed during the match */
     public ElapsedTime matchTimer;
     @Override
     public void init() {
-        board = new LM0Board();
+        board = new LM2Board();
         board.init(hardwareMap);
         //this is just bare-bones driver control, so no states needed.
         matchTimer = new ElapsedTime();
