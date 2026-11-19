@@ -23,6 +23,7 @@ public class StateMachine<B extends ProgrammingBoard, O extends OpMode> {
     private final Gamepad gamepad2;
     /** The current active state*/
     private RobotState<B, O> currentState;
+    private RobotState<B, O> nextState;
     private final StateCategory stateCategory;
     public StateMachine (O opMode, Telemetry telemetry, B board, Gamepad gamepad1, Gamepad gamepad2, StateCategory category) {
         this.opMode = opMode;
@@ -47,22 +48,26 @@ public class StateMachine<B extends ProgrammingBoard, O extends OpMode> {
      * <p>This method should be called from the OpMode's {@link com.qualcomm.robotcore.eventloop.opmode.OpMode#loop() loop() method}</p>
      */
     public void loop() {
-        Class<? extends RobotState<B, O>> nextStateClass = currentState.getNextState();
-        if (nextStateClass != currentState.getClass()) {
-            RobotState<B, O> nextState;
-            if (stateCache.get(nextStateClass) == null) {
-                try {
-                    nextState = nextStateClass.getDeclaredConstructor().newInstance();
-                    stateCache.put(nextStateClass, nextState);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+        if (nextState == currentState) {
+            Class<? extends RobotState<B, O>> nextStateClass = currentState.getNextState();
+            if (nextStateClass != currentState.getClass()) {
+                if (stateCache.get(nextStateClass) == null) {
+                    try {
+                        nextState = nextStateClass.getDeclaredConstructor().newInstance();
+                        stateCache.put(nextStateClass, nextState);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    nextState = stateCache.get(nextStateClass);
                 }
-            } else {
-                nextState = stateCache.get(nextStateClass);
             }
+            currentState.onStateLoop();
+        } else {
+            currentState.onStateEnd();
+            currentState = nextState;
+            currentState.onStateStart();
         }
-
-        currentState.onStateLoop();
     }
 
     public RobotState<B, O> getCurrentState() {
