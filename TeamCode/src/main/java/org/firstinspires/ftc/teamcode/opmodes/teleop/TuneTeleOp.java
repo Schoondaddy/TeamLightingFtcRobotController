@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drivercontrol.DriverControl;
 import org.firstinspires.ftc.teamcode.drivercontrol.TuneControl;
-import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
 
 @TeleOp
 public class TuneTeleOp extends OpMode {

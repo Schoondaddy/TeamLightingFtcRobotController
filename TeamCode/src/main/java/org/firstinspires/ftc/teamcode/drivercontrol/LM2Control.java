@@ -5,13 +5,11 @@ import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.multiAbs
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.quadraticScale;
 
 import com.pedropathing.math.Pose;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
+import org.firstinspires.ftc.teamcode.mechanisms.LM2Board;
 import org.firstinspires.ftc.teamcode.opmodes.teleop.LM0TeleOp;
 import org.firstinspires.ftc.teamcode.states.RobotState;
 import org.firstinspires.ftc.teamcode.states.StateCategory;
@@ -27,9 +25,9 @@ import org.firstinspires.ftc.teamcode.states.intakepassthrough.IntakeReverse;
 import java.util.HashMap;
 
 
-public class LM2Control extends DriverControl<LM0Board, LM0TeleOp> {
+public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
     /** Toggles Slow Mode */
-    private StateMachine<LM0Board, LM0TeleOp> intakePassthroughStateMachine;
+    private StateMachine<LM2Board, LM0TeleOp> intakePassthroughStateMachine;
     public HashMap<IntakePassthrough, Class<? extends IntakePassthroughState>> IPStatesMap;
     private boolean killSwitch;
     /** The amount of time (nanoseconds) the touchpad needs to be held in order to flip the kill switch*/
@@ -48,7 +46,7 @@ public class LM2Control extends DriverControl<LM0Board, LM0TeleOp> {
     private Pose lockedPose;
     public ElapsedTime matchTimer;
     @Override
-    public void init(Telemetry telemetry, LM0Board board, LM0TeleOp opMode, Gamepad gamepad1, Gamepad gamepad2) {
+    public void init(Telemetry telemetry, LM2Board board, LM0TeleOp opMode, Gamepad gamepad1, Gamepad gamepad2) {
         this.board = board;
         this.opMode = opMode;
         this.gamepad1 = gamepad1;
@@ -112,7 +110,7 @@ public class LM2Control extends DriverControl<LM0Board, LM0TeleOp> {
         } else if (killSwitchPressedTime != -1.0){
             killSwitchPressedTime = -1.0;
         }
-        RobotState<LM0Board, LM0TeleOp> currentState = intakePassthroughStateMachine.getCurrentState();
+        RobotState<LM2Board, LM0TeleOp> currentState = intakePassthroughStateMachine.getCurrentState();
         IntakePassthrough intendedState;
         if (gamepad1.x || gamepad1.right_trigger > 0.1) {
             intendedState = IntakePassthrough.INTAKE_PASSTHROUGH_FORWARD;

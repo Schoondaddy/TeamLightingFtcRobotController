@@ -4,9 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
-import org.firstinspires.ftc.teamcode.opmodes.teleop.LM0TeleOp;
-
 @Autonomous
 public class LeaveParkSimple extends OpMode {
     private LM0Board board;

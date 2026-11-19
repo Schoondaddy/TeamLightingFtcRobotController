@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.states.intakepassthrough;
 
-import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
-import org.firstinspires.ftc.teamcode.opmodes.autonomous.ExampleAutonomous;
+import org.firstinspires.ftc.teamcode.mechanisms.LM2Board;
 import org.firstinspires.ftc.teamcode.opmodes.teleop.LM0TeleOp;
 import org.firstinspires.ftc.teamcode.states.RobotState;
 import org.firstinspires.ftc.teamcode.states.StateCategory;
 
 /** Intake state for intake */
-public abstract class IntakePassthroughState extends RobotState<LM0Board, LM0TeleOp> {
+public abstract class IntakePassthroughState extends RobotState<LM2Board, LM0TeleOp> {
     private final double INTAKE_POWER;
     private final double PASSTHROUGH_POWER;
     private final double POWER_STEP_FACTOR;

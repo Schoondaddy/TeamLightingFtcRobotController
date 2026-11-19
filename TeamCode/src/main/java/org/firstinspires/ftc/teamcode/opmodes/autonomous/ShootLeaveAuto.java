@@ -7,12 +7,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.states.StateCategory;
 import org.firstinspires.ftc.teamcode.states.StateMachine;
 import org.firstinspires.ftc.teamcode.states.drive.OffWallDriveState;
-import org.firstinspires.ftc.teamcode.states.drive.WaitShootState;
 import org.firstinspires.ftc.teamcode.states.turretaim.ShootState;
 
 @Autonomous

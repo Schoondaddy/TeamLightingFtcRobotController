@@ -7,17 +7,16 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drivercontrol.DriverControl;
-import org.firstinspires.ftc.teamcode.drivercontrol.LM0Control;
-import org.firstinspires.ftc.teamcode.drivercontrol.LM1Control;
-import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
+import org.firstinspires.ftc.teamcode.drivercontrol.LM2Control;
+import org.firstinspires.ftc.teamcode.mechanisms.LM2Board;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 @TeleOp
 public class LM0TeleOp extends OpMode {
     /** The hardware the TeleOp uses */
-    LM0Board board;
+    LM2Board board;
     /** The driver control logic fed the programming board */
-    DriverControl<LM0Board, LM0TeleOp> dc;
+    DriverControl<LM2Board, LM0TeleOp> dc;
     /** The time that has elapsed during the match */
     public ElapsedTime matchTimer;
     public Follower follower;
@@ -25,11 +24,11 @@ public class LM0TeleOp extends OpMode {
     @Override
     public void init() {
         follower = Constants.create(hardwareMap);
-        board = new LM0Board();
+        board = new LM2Board();
         board.init(hardwareMap);
         //this is just bare-bones driver control, so no states needed.
         matchTimer = new ElapsedTime();
-        dc = new LM1Control();
+        dc = new LM2Control();
         dc.init(telemetry, board, this, gamepad1, gamepad2);
     }
 

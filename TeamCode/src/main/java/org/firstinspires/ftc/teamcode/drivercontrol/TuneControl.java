@@ -4,12 +4,10 @@ import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.applyDea
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.multiAbsMax;
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.quadraticScale;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
 
 import java.util.ArrayList;
 

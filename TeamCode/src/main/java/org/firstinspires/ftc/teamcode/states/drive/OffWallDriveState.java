@@ -2,14 +2,12 @@ package org.firstinspires.ftc.teamcode.states.drive;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.mechanisms.LM0Board;
-import org.firstinspires.ftc.teamcode.mechanisms.TestBoard;
-import org.firstinspires.ftc.teamcode.opmodes.autonomous.ExampleAutonomous;
+import org.firstinspires.ftc.teamcode.mechanisms.LM2Board;
 import org.firstinspires.ftc.teamcode.opmodes.autonomous.ShootLeaveAuto;
 import org.firstinspires.ftc.teamcode.states.RobotState;
 import org.firstinspires.ftc.teamcode.states.StateCategory;
 
-public class OffWallDriveState extends RobotState<LM0Board, ShootLeaveAuto> {
+public class OffWallDriveState extends RobotState<LM2Board, ShootLeaveAuto> {
     public OffWallDriveState() { super(StateCategory.NONE); }
     public ElapsedTime stateTimer = new ElapsedTime();
     @Override
