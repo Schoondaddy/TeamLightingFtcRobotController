@@ -149,7 +149,7 @@ public class LM1Control extends DriverControl<LM0Board, LM0TeleOp> {
             board.setBlockerServoPower(0.0);
         } else if (gamepad1.right_trigger_pressed ) { //Launch
             board.setBlockerServoPower(1.0);
-            pedroBreak = true;
+
         } else {
             board.setBlockerServoPower(-1.0);
         }

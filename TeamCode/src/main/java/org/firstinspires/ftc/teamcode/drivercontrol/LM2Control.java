@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.applyDea
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.multiAbsMax;
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.quadraticScale;
 
+import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.robot.Robot;
@@ -42,7 +43,9 @@ public class LM2Control extends DriverControl<LM0Board, LM0TeleOp> {
     private double flywheelVelocity;
     /** Toggles field centric drive */
     private boolean fieldCentric;
-
+    private boolean pedroBreak;
+    private boolean wasHolding = false;
+    private Pose lockedPose;
     public ElapsedTime matchTimer;
     @Override
     public void init(Telemetry telemetry, LM0Board board, LM0TeleOp opMode, Gamepad gamepad1, Gamepad gamepad2) {
@@ -138,10 +141,13 @@ public class LM2Control extends DriverControl<LM0Board, LM0TeleOp> {
 
         if (killSwitch) {
             board.setBlockerServoPower(0.0);
+            pedroBreak = false;
         } else if (gamepad1.x ) { //Launch
             board.setBlockerServoPower(1.0);
+            pedroBreak = true;
         } else {
             board.setBlockerServoPower(-1.0);
+            pedroBreak = false;
         }
     }
 
@@ -151,6 +157,21 @@ public class LM2Control extends DriverControl<LM0Board, LM0TeleOp> {
      * normalizes motors, and applies Slow Mode </p>
      */
     private void handleDrivetrain() {
+        opMode.follower.update();
+        if (pedroBreak) {
+            if (!wasHolding) {
+                lockedPose = opMode.follower.pose();
+            }
+            wasHolding = true;
+            opMode.follower.hold(lockedPose);
+            return;
+        } else {
+            if (wasHolding) {
+                opMode.follower.idle();
+            }
+            wasHolding = false;
+
+        }
         double axial;
         double lateral;
         double yaw;
