@@ -40,6 +40,7 @@ public class StateMachine<B extends ProgrammingBoard, O extends OpMode> {
      */
     public void init(RobotState<B, O> initState) {
         currentState = initState;
+        nextState = currentState;
         stateCache.put(initState.getClass(),initState);
         currentState.initializeState(opMode, telemetry, board, gamepad1, gamepad2);
         currentState.onStateStart();
