@@ -163,10 +163,10 @@ public class LM2Control extends DriverControl<LM0Board, LM0TeleOp> {
             double theta = -board.getCurrentPedroPose().heading();
             double tempLateral = lateral * Math.cos(theta) - axial * Math.sin(theta);
             double tempAxial   = lateral * Math.sin(theta) + axial * Math.cos(theta);
-    
+
             lateral = tempLateral;
             axial = tempAxial;
-}
+
         }
 
         currentVoltage = board.getCachedVoltage();
