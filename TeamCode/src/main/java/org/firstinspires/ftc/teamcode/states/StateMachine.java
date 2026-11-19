@@ -8,9 +8,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanisms.ProgrammingBoard;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class StateMachine<B extends ProgrammingBoard, O extends OpMode> {
-    public HashMap<Class<? extends RobotState<B, O>>, RobotState<B,O>> stateCache = new HashMap<>();
+    public Map<Class<? extends RobotState>, RobotState<B, O>> stateCache = new HashMap<>();
     private final O opMode;
     /** FTC telemetry interface used to send data to the Driver Station*/
     private final Telemetry telemetry;
@@ -38,6 +39,7 @@ public class StateMachine<B extends ProgrammingBoard, O extends OpMode> {
      */
     public void init(RobotState<B, O> initState) {
         currentState = initState;
+        stateCache.put(initState.getClass(),initState);
         currentState.initializeState(opMode, telemetry, board, gamepad1, gamepad2);
         currentState.onStateStart();
     }
