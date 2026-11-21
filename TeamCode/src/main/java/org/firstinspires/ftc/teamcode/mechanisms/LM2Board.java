@@ -54,6 +54,7 @@ public class LM2Board implements ProgrammingBoard {
     private VoltageSensor voltageSensor;
     private double cachedVoltage = 12;
     private Servo aimServo;
+    private Servo depollinatorServo;
     private CRServo blockerServo; //Need to change to regular servo when new blocker installed
     private MotorWrapper intakeMotor;
     private MotorWrapper passthroughMotor;
@@ -72,12 +73,9 @@ public class LM2Board implements ProgrammingBoard {
         voltageSensor = hwMap.get(VoltageSensor.class, "Control Hub");
         voltageTimer = new ElapsedTime();
 
-        //rotationServo1 = hwMap.get(Servo.class, "rot_servo_1");
-        //rotationServo2 = hwMap.get(Servo.class, "rot_servo_2");
-        //rotationServo3 = hwMap.get(Servo.class, "rot_servo_3");
-        //rotationServo3.setDirection(Servo.Direction.REVERSE);
         aimServo = hwMap.get(Servo.class, "aim_servo");
         aimServo.scaleRange(0.0, 0.8);
+        depollinatorServo = hwMap.get(Servo.class, "depollinator_servo");
         blockerServo = hwMap.get(CRServo.class, "blocker_servo");
 
         intakeMotor = new MotorWrapper(hwMap.get(DcMotor.class, "intake_motor"));
@@ -106,10 +104,9 @@ public class LM2Board implements ProgrammingBoard {
         flywheelMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
         flywheelMotor1.setVelocityPIDFCoefficients(15.0, 0.85, 1.5, 15.0);
         flywheelMotor2.setVelocityPIDFCoefficients(15.0, 0.85, 1.5, 15.0);
+
         odoPod = hwMap.get(GoBildaPinpointDriver.class, "odo_pod");
         odoPod.resetPosAndIMU();
-
-        aimServo.setPosition(0.5);
     }
 
     @Override
@@ -141,10 +138,6 @@ public class LM2Board implements ProgrammingBoard {
     public void cacheBrMotorPower(double power) {
         brMotor.cachePower(power);
     }
-
-    public void setAimServoPosition(double pos) {
-        aimServo.setPosition(pos);
-    }
     public void cacheIntakeMotorPower(double power) {
         intakeMotor.cachePower(power);
     }
@@ -169,9 +162,17 @@ public class LM2Board implements ProgrammingBoard {
     public double getFlywheelMotor2Vel() {
         return flywheelMotor2.getVelocity();
     }
-
+    public void setAimServoPosition(double pos) {
+        aimServo.setPosition(pos);
+    }
     public double getAimServoPosition() {
         return aimServo.getPosition();
+    }
+    public void setDepollinatorServoPosition(double pos) {
+        depollinatorServo.setPosition(pos);
+    }
+    public void setBlockerServoPower(double power) {
+        blockerServo.setPower(power);
     }
     public Pose2D getCurrentPose() {return currentPose; }
     public Pose getCurrentPedroPose() {
@@ -190,9 +191,5 @@ public class LM2Board implements ProgrammingBoard {
         for (MotorWrapper motor : motors) {
             motor.killSwitch = !motor.killSwitch;
         }
-    }
-
-    public void setBlockerServoPower(double power) {
-        blockerServo.setPower(power);
     }
 }

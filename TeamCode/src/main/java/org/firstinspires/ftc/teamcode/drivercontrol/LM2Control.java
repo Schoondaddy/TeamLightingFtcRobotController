@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.mechanisms.LM2Board;
 import org.firstinspires.ftc.teamcode.opmodes.teleop.LM0TeleOp;
 import org.firstinspires.ftc.teamcode.states.RobotState;
@@ -76,6 +77,7 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
     @Override
     public void start() {
         board.setAimServoPosition(0.66);
+        board.setDepollinatorServoPosition(0.5);
         board.setFlywheelMotor1Vel(flywheelVelocity);
         board.setFlywheelMotor2Vel(flywheelVelocity);
     }
@@ -173,13 +175,12 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
         double axial;
         double lateral;
         double yaw;
-        double overrideDeadzone = 0.1;
         axial = -quadraticScale(applyDeadzone(gamepad1.left_stick_y, 0.05));
         lateral = quadraticScale(applyDeadzone(gamepad1.left_stick_x, 0.05));
         yaw = quadraticScale(applyDeadzone(gamepad1.right_stick_x, 0.05));
 
         if (fieldCentric) {
-            double theta = -board.getCurrentPedroPose().heading();
+            double theta = -board.getCurrentPose().getHeading(AngleUnit.RADIANS);
             double tempLateral = lateral * Math.cos(theta) - axial * Math.sin(theta);
             double tempAxial   = lateral * Math.sin(theta) + axial * Math.cos(theta);
 
