@@ -179,7 +179,7 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
         yaw = quadraticScale(applyDeadzone(gamepad1.right_stick_x, 0.05));
 
         if (fieldCentric) {
-            double theta = -board.getCurrentPedroPose().heading();
+            double theta = -board.getCurrentPedroPose().heading() - Math.PI/2;
             double tempLateral = lateral * Math.cos(theta) - axial * Math.sin(theta);
             double tempAxial   = lateral * Math.sin(theta) + axial * Math.cos(theta);
 
