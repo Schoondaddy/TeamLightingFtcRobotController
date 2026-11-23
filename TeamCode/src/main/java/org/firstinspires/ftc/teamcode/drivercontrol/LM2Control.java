@@ -140,13 +140,10 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
 
 
         if (killSwitch) {
-            board.setBlockerServoPower(0.0);
             pedroBreak = false;
         } else if (gamepad1.x ) { //Launch
-            board.setBlockerServoPower(1.0);
             pedroBreak = true;
         } else {
-            board.setBlockerServoPower(-1.0);
             pedroBreak = false;
         }
     }
