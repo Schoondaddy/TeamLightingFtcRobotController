@@ -169,7 +169,6 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
                 opMode.follower.idle();
             }
             wasHolding = false;
-
         }
         double axial;
         double lateral;
