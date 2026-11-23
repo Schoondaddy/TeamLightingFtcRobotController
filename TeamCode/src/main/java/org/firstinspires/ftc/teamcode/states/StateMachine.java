@@ -55,6 +55,7 @@ public class StateMachine<B extends ProgrammingBoard, O extends OpMode> {
                 if (stateCache.get(nextStateClass) == null) {
                     try {
                         nextState = nextStateClass.getDeclaredConstructor().newInstance();
+                        nextState.initializeState(opMode, telemetry, board, gamepad1, gamepad2);
                         stateCache.put(nextStateClass, nextState);
                     } catch (Exception e) {
                         throw new RuntimeException(e);
