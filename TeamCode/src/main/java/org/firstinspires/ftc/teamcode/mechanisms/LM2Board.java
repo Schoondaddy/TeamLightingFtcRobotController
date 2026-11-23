@@ -77,10 +77,8 @@ public class LM2Board implements ProgrammingBoard {
         aimServo.scaleRange(0.0, 0.8);
         depollinatorServo = hwMap.get(Servo.class, "depollinator_servo");
         depollinatorServo.scaleRange(0,0.69);
-        deployDepollinator();
         blockerServo = hwMap.get(Servo.class, "blocker_servo");
-        blockerServo.scaleRange(0.3,0.0);
-        blockerServo.setPosition(1.0);
+        blockerServo.scaleRange(0.25,0.45);
 
         intakeMotor = new MotorWrapper(hwMap.get(DcMotor.class, "intake_motor"));
         passthroughMotor = new MotorWrapper(hwMap.get(DcMotor.class, "passthrough_motor"));
