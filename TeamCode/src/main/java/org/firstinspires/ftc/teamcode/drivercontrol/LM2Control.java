@@ -42,6 +42,7 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
     private double flywheelVelocity;
     /** Toggles field centric drive */
     private boolean fieldCentric;
+    private boolean depollinatorDeployed;
     private boolean pedroBreak;
     private boolean wasHolding = false;
     private Pose lockedPose;
@@ -76,9 +77,10 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
 
     @Override
     public void start() {
-        board.setAimServoPosition(0.66);
+        depollinatorDeployed = false;
         board.retractDepollinator();
         board.deployBlocker();
+        board.setAimServoPosition(0.5);
         board.setFlywheelMotor1Vel(flywheelVelocity);
         board.setFlywheelMotor2Vel(flywheelVelocity);
     }
@@ -138,6 +140,16 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
         intakePassthroughStateMachine.loop();
 
         telemetry.addData("TPS: ", board.getFlywheelMotor1Vel());
+
+
+        if (gamepad1.yWasPressed()) {
+            depollinatorDeployed = !depollinatorDeployed;
+            if (depollinatorDeployed) {
+                board.deployDepollinator();
+            } else {
+                board.retractDepollinator();
+            }
+        }
 
         if (gamepad1.xWasPressed()) {
             board.retractBlocker();

@@ -74,7 +74,7 @@ public class LM2Board implements ProgrammingBoard {
         voltageTimer = new ElapsedTime();
 
         aimServo = hwMap.get(Servo.class, "aim_servo");
-        aimServo.scaleRange(0.0, 0.8);
+        aimServo.scaleRange(0.0,0.4);
         depollinatorServo = hwMap.get(Servo.class, "depollinator_servo");
         depollinatorServo.scaleRange(0,0.69);
         blockerServo = hwMap.get(Servo.class, "blocker_servo");
@@ -103,7 +103,7 @@ public class LM2Board implements ProgrammingBoard {
         flywheelMotor1 = hwMap.get(DcMotorEx.class, "flywheel_motor_1");
         flywheelMotor2 = hwMap.get(DcMotorEx.class, "flywheel_motor_2");
         flywheelMotor1.setDirection(DcMotorSimple.Direction.FORWARD);
-        flywheelMotor2.setDirection(DcMotorSimple.Direction.FORWARD);
+        flywheelMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
         flywheelMotor1.setVelocityPIDFCoefficients(15.0, 0.85, 1.5, 15.0);
         flywheelMotor2.setVelocityPIDFCoefficients(15.0, 0.85, 1.5, 15.0);
 
