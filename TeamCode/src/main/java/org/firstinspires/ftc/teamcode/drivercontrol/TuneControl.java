@@ -58,11 +58,9 @@ public class TuneControl extends DriverControl<LM2Board, OpMode>{
         if (!intakeStop) {
             board.cacheIntakeMotorPower(0.75);
             board.cachePassthroughMotorPower(0.75);
-            board.setBlockerServoPower(1.0);
         } else {
             board.cacheIntakeMotorPower(0.0);
             board.cachePassthroughMotorPower(0.0);
-            board.setBlockerServoPower(0.0);
         }
 
         if (!TPSStop) {flywheelVel = handleFWheel();}

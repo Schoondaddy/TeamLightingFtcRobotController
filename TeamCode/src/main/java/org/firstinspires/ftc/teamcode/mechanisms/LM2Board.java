@@ -55,7 +55,7 @@ public class LM2Board implements ProgrammingBoard {
     private double cachedVoltage = 12;
     private Servo aimServo;
     private Servo depollinatorServo;
-    private CRServo blockerServo; //Need to change to regular servo when new blocker installed
+    private Servo blockerServo;
     private MotorWrapper intakeMotor;
     private MotorWrapper passthroughMotor;
     private MotorWrapper flMotor;
@@ -76,7 +76,10 @@ public class LM2Board implements ProgrammingBoard {
         aimServo = hwMap.get(Servo.class, "aim_servo");
         aimServo.scaleRange(0.0, 0.8);
         depollinatorServo = hwMap.get(Servo.class, "depollinator_servo");
-        blockerServo = hwMap.get(CRServo.class, "blocker_servo");
+        depollinatorServo.scaleRange(0,0.69);
+        deployDepollinator();
+        blockerServo = hwMap.get(Servo.class, "blocker_servo");
+        blockerServo.setPosition(0.5);
 
         intakeMotor = new MotorWrapper(hwMap.get(DcMotor.class, "intake_motor"));
         passthroughMotor = new MotorWrapper(hwMap.get(DcMotor.class, "passthrough_motor"));
@@ -168,11 +171,17 @@ public class LM2Board implements ProgrammingBoard {
     public double getAimServoPosition() {
         return aimServo.getPosition();
     }
-    public void setDepollinatorServoPosition(double pos) {
-        depollinatorServo.setPosition(pos);
+    public void deployDepollinator() {
+        depollinatorServo.setPosition(1.0);
     }
-    public void setBlockerServoPower(double power) {
-        blockerServo.setPower(power);
+    public void retractDepollinator() {
+        depollinatorServo.setPosition(0.0);
+    }
+    public void deployBlocker() {
+        blockerServo.setPosition(1.0);
+    }
+    public void retractBlocker() {
+        blockerServo.setPosition(0.0);
     }
     public Pose2D getCurrentPose() {return currentPose; }
     public Pose getCurrentPedroPose() {

@@ -77,7 +77,7 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
     @Override
     public void start() {
         board.setAimServoPosition(0.66);
-        board.setDepollinatorServoPosition(0.5);
+        board.retractDepollinator();
         board.setFlywheelMotor1Vel(flywheelVelocity);
         board.setFlywheelMotor2Vel(flywheelVelocity);
     }
@@ -140,13 +140,13 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
 
 
         if (killSwitch) {
-            board.setBlockerServoPower(0.0);
+            board.deployBlocker();
             pedroBreak = false;
         } else if (gamepad1.x ) { //Launch
-            board.setBlockerServoPower(1.0);
+            board.retractBlocker();
             pedroBreak = true;
         } else {
-            board.setBlockerServoPower(-1.0);
+            board.deployBlocker();
             pedroBreak = false;
         }
     }
