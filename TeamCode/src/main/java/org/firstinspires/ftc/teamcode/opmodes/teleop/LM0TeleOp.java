@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
+import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -26,7 +27,6 @@ public class LM0TeleOp extends OpMode {
         follower = Constants.create(hardwareMap);
         board = new LM2Board();
         board.init(hardwareMap);
-        //this is just bare-bones driver control, so no states needed.
         matchTimer = new ElapsedTime();
         dc = new LM2Control();
         dc.init(telemetry, board, this, gamepad1, gamepad2);
@@ -39,6 +39,13 @@ public class LM0TeleOp extends OpMode {
 
     @Override
     public void loop() {
+        if (matchTimer.seconds() > 7) {
+            matchTimer.reset();
+            int soundID = hardwareMap.appContext.getResources().getIdentifier("test", "raw", hardwareMap.appContext.getPackageName());
+            if (soundID != 0) {
+                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, soundID);
+            }
+        }
         board.readLoop();
         dc.loop();
         board.writeLoop();
