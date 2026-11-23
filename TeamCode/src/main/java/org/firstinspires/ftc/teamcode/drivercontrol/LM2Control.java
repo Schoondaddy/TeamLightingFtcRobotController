@@ -78,6 +78,7 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
     public void start() {
         board.setAimServoPosition(0.66);
         board.retractDepollinator();
+        board.retractBlocker();
         board.setFlywheelMotor1Vel(flywheelVelocity);
         board.setFlywheelMotor2Vel(flywheelVelocity);
     }
@@ -97,7 +98,7 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
                 board.flipKillSwitch();
                 killSwitch = !killSwitch;
                 if (killSwitch) {
-                    board.setFlywheelMotor1Vel(0.0);
+                    board.setFlywheelMotor1Vel(0.0) ;
                     board.setFlywheelMotor2Vel(0.0);
                 } else {
                     board.setFlywheelMotor1Vel(flywheelVelocity);
