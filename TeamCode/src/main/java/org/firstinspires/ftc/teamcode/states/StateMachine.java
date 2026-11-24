@@ -62,7 +62,7 @@ public class StateMachine<B extends ProgrammingBoard, O extends OpMode> {
                     }
                 } else {
                     nextState = stateCache.get(nextStateClass);
-                }
+                    nextState.initializeState(opMode, telemetry, board, gamepad1, gamepad2);                }
             }
             currentState.onStateLoop();
         } else {

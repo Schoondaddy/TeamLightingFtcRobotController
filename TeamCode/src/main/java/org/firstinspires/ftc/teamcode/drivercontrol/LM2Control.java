@@ -4,6 +4,8 @@ import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.applyDea
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.multiAbsMax;
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.quadraticScale;
 
+import androidx.annotation.NonNull;
+
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -116,54 +118,52 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
             killSwitchPressedTime = -1.0;
         }
         RobotState<LM2Board, LM0TeleOp> currentState = intakePassthroughStateMachine.getCurrentState();
-        IntakePassthrough intendedState;
-        if (gamepad1.x || gamepad1.right_trigger > 0.1) {
-            intendedState = IntakePassthrough.INTAKE_PASSTHROUGH_FORWARD;
-            currentState.transitionState(IntakePassthroughForward.class);
-        } else if (gamepad1.left_trigger > 0.1) {
-            intendedState = IntakePassthrough.INTAKE_FORWARD;
-            currentState.transitionState(IntakeForward.class);
-        } else if (gamepad1.right_bumper) {
-            intendedState = IntakePassthrough.INTAKE_PASSTHROUGH_REVERSE;
-            currentState.transitionState(IntakePassthroughReverse.class);
-        } else if (gamepad1.left_bumper) {
-            intendedState = IntakePassthrough.INTAKE_REVERSE;
-            currentState.transitionState(IntakeReverse.class);
-        } else {
-            intendedState = IntakePassthrough.INTAKE_PASSTHROUGH_IDLE;
-            currentState.transitionState(IntakePassthroughIdle.class);
+        Class<? extends IntakePassthroughState> intendedState = getIntendedIntakePassthroughState();
+        if (currentState.getClass() != intendedState) {
+            currentState.transitionState(intendedState);
         }
 
-
-        telemetry.addData("Intended state: ", intendedState.toString());
-        telemetry.addData("Actual State: ", currentState);
         intakePassthroughStateMachine.loop();
 
         telemetry.addData("TPS: ", board.getFlywheelMotor1Vel());
 
+        if (!killSwitch) {
+            if (gamepad1.yWasPressed()) {
+                depollinatorDeployed = !depollinatorDeployed;
+                if (depollinatorDeployed) {
+                    board.deployDepollinator();
+                } else {
+                    board.retractDepollinator();
+                }
+            }
 
-        if (gamepad1.yWasPressed()) {
-            depollinatorDeployed = !depollinatorDeployed;
-            if (depollinatorDeployed) {
-                board.deployDepollinator();
-            } else {
-                board.retractDepollinator();
+            if (gamepad1.xWasPressed()) {
+                board.retractBlocker();
+                pedroBreak = true;
+            } else if (gamepad1.xWasReleased()) {
+                board.deployBlocker();
+                pedroBreak = false;
             }
         }
+    }
 
-        if (gamepad1.xWasPressed()) {
-            board.retractBlocker();
-        } else if (gamepad2.xWasReleased()) {
-            board.deployBlocker();
-        }
-
+    @NonNull
+    private Class<? extends IntakePassthroughState> getIntendedIntakePassthroughState() {
+        Class<? extends IntakePassthroughState> intendedState;
         if (killSwitch) {
-            pedroBreak = false;
-        } else if (gamepad1.x ) { //Launch
-            pedroBreak = true;
+            intendedState = IntakePassthroughIdle.class;
+        } else if (gamepad1.x || gamepad1.right_trigger > 0.1) {
+            intendedState = IntakePassthroughForward.class;
+        } else if (gamepad1.left_trigger > 0.1) {
+            intendedState = IntakeForward.class;
+        } else if (gamepad1.right_bumper) {
+            intendedState = IntakePassthroughReverse.class;
+        } else if (gamepad1.left_bumper) {
+            intendedState = IntakeReverse.class;
         } else {
-            pedroBreak = false;
+            intendedState = IntakePassthroughIdle.class;
         }
+        return intendedState;
     }
 
     /**
@@ -182,11 +182,12 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
             return;
         } else {
             if (wasHolding) {
-                opMode.follower.idle();
+                opMode.follower.stop();
             }
             wasHolding = false;
-
         }
+        telemetry.addData("Follower mode: ", opMode.follower.mode());
+        
         double axial;
         double lateral;
         double yaw;
