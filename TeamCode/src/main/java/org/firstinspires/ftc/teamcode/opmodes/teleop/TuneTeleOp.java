@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.pedropathing.math.Pose;
+import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -17,6 +18,8 @@ public class TuneTeleOp extends OpMode {
     DriverControl<LM2Board, OpMode> driverControl;
     /** The time that has elapsed during the match */
     public ElapsedTime matchTimer;
+    public double deadLine;
+    public ElapsedTime timer;
     @Override
     public void init() {
         board = new LM2Board();
@@ -30,10 +33,19 @@ public class TuneTeleOp extends OpMode {
     @Override
     public void start() {
         driverControl.start();
+        timer = new ElapsedTime();
     }
 
     @Override
     public void loop() {
+        if (timer.seconds() > deadLine) {
+            timer.reset();
+            deadLine = (int) (Math.random() * 3) + 0.5;
+            int soundID = hardwareMap.appContext.getResources().getIdentifier("slimebeck", "raw", hardwareMap.appContext.getPackageName());
+            if (soundID != 0) {
+                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, soundID);
+            }
+        }
         board.readLoop();
         driverControl.loop();
 

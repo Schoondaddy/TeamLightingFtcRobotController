@@ -51,7 +51,7 @@ public class TuneControl extends DriverControl<LM2Board, OpMode>{
         this.hoodStop = false;
 
         flywheelVel = 980.0;
-        hoodAngle = 0.66;
+        hoodAngle = 0.5;
     }
 
     @Override
@@ -59,6 +59,7 @@ public class TuneControl extends DriverControl<LM2Board, OpMode>{
         board.setFlywheelMotor1Vel(flywheelVel);
         board.setFlywheelMotor2Vel(flywheelVel);
         board.setAimServoPosition(hoodAngle);
+        board.deployBlocker();
         matchTimer = new ElapsedTime();
         errorWindow.clear();
         errorSum = 0.0;
@@ -78,7 +79,7 @@ public class TuneControl extends DriverControl<LM2Board, OpMode>{
             errorSum -= errorWindow.removeFirst().error;
         }
 
-        double avgError = errorWindow.isEmpty() ? 0.0 : errorSum / errorWindow.size();
+        double aveError = errorWindow.isEmpty() ? 0.0 : errorSum / errorWindow.size();
         if (gamepad1.aWasPressed()) { driveStop = !driveStop; }
 
         if (gamepad1.bWasPressed()) { intakeStop = !intakeStop; }
@@ -99,7 +100,11 @@ public class TuneControl extends DriverControl<LM2Board, OpMode>{
         if (!FWStop) {flywheelVel = handleFWheel();}
         if (!hoodStop) {hoodAngle = handleHood();}
 
-
+        if (gamepad1.rightTriggerWasPressed()) {
+            board.retractBlocker();
+        } else if (gamepad1.rightTriggerWasReleased()) {
+            board.deployBlocker();
+        }
 
         if (gamepad1.startWasPressed()) {
             board.flipKillSwitch();
@@ -108,6 +113,7 @@ public class TuneControl extends DriverControl<LM2Board, OpMode>{
         telemetry.addData("Hood Angle", hoodAngle);
         telemetry.addData("Target FW speed", flywheelVel);
         telemetry.addData("Actual FW speed: ", board.getFlywheelMotor1Vel());
+        telemetry.addData("Past 5 second FW Inaccuracy", aveError);
         //telemetry.addData("PID coeffs: ", board.flywheelMotor1.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER).toString());
     }
     private void handleDrivetrain() {
