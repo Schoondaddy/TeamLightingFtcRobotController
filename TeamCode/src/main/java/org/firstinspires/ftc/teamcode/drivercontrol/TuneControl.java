@@ -4,15 +4,21 @@ import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.applyDea
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.multiAbsMax;
 import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.quadraticScale;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanisms.LM2Board;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TuneControl extends DriverControl<LM2Board, OpMode>{
+    private ElapsedTime matchTimer;
     ArrayList<Double> xList = new ArrayList<>();
     ArrayList<Double> yList = new ArrayList<>();
     private boolean driveStop;
@@ -21,6 +27,17 @@ public class TuneControl extends DriverControl<LM2Board, OpMode>{
     private boolean hoodStop;
     private double flywheelVel;
     private double hoodAngle;
+    private static class ErrorSample {
+        final double time;
+        final double error;
+        ErrorSample(double time, double error) {
+            this.time = time;
+            this.error = error;
+        }
+    }
+    private final Deque<ErrorSample> errorWindow = new ArrayDeque<>();
+    private double errorSum = 0.0;
+    private static final double WINDOW_SECONDS = 5.0;
 
     public void init(Telemetry telemetry, LM2Board board, OpMode opMode, Gamepad gamepad1, Gamepad gamepad2) {
         this.board = board;
@@ -42,10 +59,26 @@ public class TuneControl extends DriverControl<LM2Board, OpMode>{
         board.setFlywheelMotor1Vel(flywheelVel);
         board.setFlywheelMotor2Vel(flywheelVel);
         board.setAimServoPosition(hoodAngle);
+        matchTimer = new ElapsedTime();
+        errorWindow.clear();
+        errorSum = 0.0;
     }
 
     @Override
     public void loop() {
+        double actualFlywheelVel = ( board.getFlywheelMotor1Vel() + board.getFlywheelMotor2Vel() )/ 2;
+        double now = matchTimer.seconds();
+        // Use Math.abs(flywheelVel - actualFlywheelVel) if you don't want +/- errors to cancel out
+        double currentError = Math.abs(flywheelVel - actualFlywheelVel);
+
+        errorWindow.addLast(new ErrorSample(now, currentError));
+        errorSum += currentError;
+
+        while (!errorWindow.isEmpty() && (now - errorWindow.peekFirst().time > WINDOW_SECONDS)) {
+            errorSum -= errorWindow.removeFirst().error;
+        }
+
+        double avgError = errorWindow.isEmpty() ? 0.0 : errorSum / errorWindow.size();
         if (gamepad1.aWasPressed()) { driveStop = !driveStop; }
 
         if (gamepad1.bWasPressed()) { intakeStop = !intakeStop; }
