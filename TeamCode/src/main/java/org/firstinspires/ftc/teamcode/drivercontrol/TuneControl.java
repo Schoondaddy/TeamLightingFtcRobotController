@@ -50,7 +50,7 @@ public class TuneControl extends DriverControl<LM2Board, OpMode>{
         this.FWStop = false;
         this.hoodStop = false;
 
-        flywheelVel = 980.0;
+        flywheelVel = 2500.0;
         hoodAngle = 0.5;
     }
 

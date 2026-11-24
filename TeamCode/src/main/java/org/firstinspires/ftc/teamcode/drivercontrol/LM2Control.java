@@ -73,7 +73,7 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
         nominalVoltage = 12.0;
         currentVoltage = nominalVoltage;
         matchTimer = new ElapsedTime();
-        flywheelVelocity = 980.0;
+        flywheelVelocity = 2500.0;
         fieldCentric = true;
     }
 
