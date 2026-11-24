@@ -16,8 +16,6 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 @TeleOp
 public class LM0TeleOp extends OpMode {
-    private MediaPlayer music;
-    private boolean musicStarted = false;
     /** The hardware the TeleOp uses */
     LM2Board board;
     /** The driver control logic fed the programming board */
@@ -25,7 +23,7 @@ public class LM0TeleOp extends OpMode {
     /** The time that has elapsed during the match */
     public ElapsedTime matchTimer;
     public Follower follower;
-
+    public double deadLine = 1.5;
     @Override
     public void init() {
         follower = Constants.create(hardwareMap);
@@ -45,27 +43,20 @@ public class LM0TeleOp extends OpMode {
 
     @Override
     public void loop() {
-        /*
-        if (music != null && !musicStarted) {
-            music.start();
-            musicStarted = true;
+
+        if (matchTimer.seconds() > deadLine) {
+            deadLine = (int) (Math.random() * 3) + 0.5;
+            int soundID = hardwareMap.appContext.getResources().getIdentifier("slimebeck", "raw", hardwareMap.appContext.getPackageName());
+            if (soundID != 0) {
+                SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, soundID);
+            }
         }
-        */
         board.readLoop();
         dc.loop();
         board.writeLoop();
         Pose pedroPose = board.getCurrentPedroPose();
         telemetry.addData("X", pedroPose.x());
         telemetry.addData("Y", pedroPose.y());
-    }
-    @Override
-    public void stop() {
-        /*
-        if (music != null) {
-            music.stop();
-            music.release();
-            music = null;
-       } */
     }
 
 }
