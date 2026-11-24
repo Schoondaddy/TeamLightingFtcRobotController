@@ -17,7 +17,7 @@ public class TuneControl extends DriverControl<LM2Board, OpMode>{
     ArrayList<Double> yList = new ArrayList<>();
     private boolean driveStop;
     private boolean intakeStop;
-    private boolean TPSStop;
+    private boolean FWStop;
     private boolean hoodStop;
     private double flywheelVel;
     private double hoodAngle;
@@ -30,8 +30,8 @@ public class TuneControl extends DriverControl<LM2Board, OpMode>{
 
         this.driveStop = false;
         this.intakeStop = false;
-        this.TPSStop = true;
-        this.hoodStop = true;
+        this.FWStop = false;
+        this.hoodStop = false;
 
         flywheelVel = 980.0;
         hoodAngle = 0.66;
@@ -50,7 +50,7 @@ public class TuneControl extends DriverControl<LM2Board, OpMode>{
 
         if (gamepad1.bWasPressed()) { intakeStop = !intakeStop; }
 
-        if (gamepad1.xWasPressed()) { TPSStop = !TPSStop; }
+        if (gamepad1.xWasPressed()) { FWStop = !FWStop; }
 
         if (gamepad1.yWasPressed()) { hoodStop = !hoodStop; }
 
@@ -63,7 +63,7 @@ public class TuneControl extends DriverControl<LM2Board, OpMode>{
             board.cachePassthroughMotorPower(0.0);
         }
 
-        if (!TPSStop) {flywheelVel = handleFWheel();}
+        if (!FWStop) {flywheelVel = handleFWheel();}
         if (!hoodStop) {hoodAngle = handleHood();}
 
 
