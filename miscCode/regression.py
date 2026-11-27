@@ -4,7 +4,7 @@ import time
 from pathlib import Path
 
 start = time.perf_counter()
-data_frame = pd.read_csv(Path(__file__).parent / "data" / "data.csv")
+data_frame = pd.read_csv(Path(__file__).parent / "data" / "shots.csv")
 
 x = data_frame.iloc[:,2] # column 3
 

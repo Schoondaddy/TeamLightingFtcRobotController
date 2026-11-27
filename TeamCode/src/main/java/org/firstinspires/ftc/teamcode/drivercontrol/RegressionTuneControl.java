@@ -64,7 +64,7 @@ public class RegressionTuneControl extends DriverControl<LM2Board, RegressionTun
     private static final double WINDOW_SECONDS = 5.0;
 
     public void init(Telemetry telemetry, LM2Board board, RegressionTunerTeleOp opMode, Gamepad gamepad1, Gamepad gamepad2) {
-
+        this.opMode = opMode;
         this.board = board;
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
@@ -97,8 +97,10 @@ public class RegressionTuneControl extends DriverControl<LM2Board, RegressionTun
     @Override
     public void loop() {
         if (serverActive) {
+            telemetry.addData("Uploading", true);
             return;
         }
+        telemetry.addData("Uploading", false);
         distance = follower.pose().distance(targetPose);
 
 
@@ -124,7 +126,9 @@ public class RegressionTuneControl extends DriverControl<LM2Board, RegressionTun
             uploadTimer.reset();
         }
         if (gamepad1.start) {
+            telemetry.addData("Start pressed", true);
             if (uploadTimer.seconds() > 5.0) {
+                telemetry.addData("Uploading", true);
                 writeCSV();
                 openServer();
                 serverActive = true;

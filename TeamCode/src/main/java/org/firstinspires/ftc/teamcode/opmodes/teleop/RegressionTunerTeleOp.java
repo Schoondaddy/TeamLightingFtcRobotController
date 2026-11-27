@@ -39,6 +39,7 @@ public class RegressionTunerTeleOp extends OpMode {
         //this is just bare-bones driver control, so no states needed.
         driverControl = new RegressionTuneControl();
         driverControl.init(telemetry, board, this, gamepad1, gamepad2);
+        driverControl.start();
     }
     @Override
     public void start() {

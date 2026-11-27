@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.drivercontrol.DriverControl;
 import org.firstinspires.ftc.teamcode.drivercontrol.TuneControl;
 import org.firstinspires.ftc.teamcode.mechanisms.LM2Board;
+import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 @TeleOp
 public class TuneTeleOp extends OpMode {
@@ -24,6 +25,8 @@ public class TuneTeleOp extends OpMode {
     public Follower follower;
     @Override
     public void init() {
+        follower = Constants.create(hardwareMap);
+        follower.setPose(new Pose(10,10,Math.PI));
         board = new LM2Board();
         board.init(hardwareMap);
         //this is just bare-bones driver control, so no states needed.
