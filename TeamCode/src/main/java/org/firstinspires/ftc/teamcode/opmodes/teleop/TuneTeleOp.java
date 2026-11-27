@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
 import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -20,6 +21,7 @@ public class TuneTeleOp extends OpMode {
     public ElapsedTime matchTimer;
     public double deadLine;
     public ElapsedTime timer;
+    public Follower follower;
     @Override
     public void init() {
         board = new LM2Board();
@@ -50,7 +52,7 @@ public class TuneTeleOp extends OpMode {
         driverControl.loop();
 
         board.writeLoop();
-        Pose pedroPose = board.getCurrentPedroPose();
+        Pose pedroPose = follower.pose();
         telemetry.addData("X", pedroPose.x());
         telemetry.addData("Y", pedroPose.y());
     }

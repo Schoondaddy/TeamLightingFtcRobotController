@@ -181,7 +181,7 @@ public class LM2Board implements ProgrammingBoard {
     public void retractBlocker() {
         blockerServo.setPosition(0.0);
     }
-    public Pose2D getCurrentPose() {return currentPose; }
+    public Pose2D getCurrentFTCPose() {return currentPose; }
     public Pose getCurrentPedroPose() {
         double x = currentPose.getX(DistanceUnit.INCH);
         double y = currentPose.getY(DistanceUnit.INCH);

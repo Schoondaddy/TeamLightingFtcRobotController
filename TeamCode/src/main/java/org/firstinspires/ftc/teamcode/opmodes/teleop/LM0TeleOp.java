@@ -54,7 +54,7 @@ public class LM0TeleOp extends OpMode {
         board.readLoop();
         dc.loop();
         board.writeLoop();
-        Pose pedroPose = board.getCurrentPedroPose();
+        Pose pedroPose = follower.pose();
         telemetry.addData("X", pedroPose.x());
         telemetry.addData("Y", pedroPose.y());
     }
