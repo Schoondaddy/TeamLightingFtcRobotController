@@ -16,7 +16,7 @@ public class TuneTeleOp extends OpMode {
     /** The hardware the TeleOp uses */
     LM2Board board;
     /** The driver control logic fed the programming board */
-    DriverControl<LM2Board, OpMode> driverControl;
+    DriverControl<LM2Board, TuneTeleOp> driverControl;
     /** The time that has elapsed during the match */
     public ElapsedTime matchTimer;
     public double deadLine;

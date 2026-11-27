@@ -19,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 public class LM2Board implements ProgrammingBoard {
     private static class MotorWrapper {
         private boolean killSwitch = false;
+        private boolean pastKillSwitch = false;
         private final DcMotor motor;
         private double cachedPower;
         private double prevCachedPower;
@@ -43,7 +44,10 @@ public class LM2Board implements ProgrammingBoard {
         }
         private void write() {
             if (killSwitch){
-                motor.setPower(0.0);
+                if (!pastKillSwitch) {
+                    motor.setPower(0.0);
+                    pastKillSwitch = true;
+                }
             }
             else if (cachedPower != prevCachedPower) {
                 motor.setPower(cachedPower);
@@ -66,6 +70,7 @@ public class LM2Board implements ProgrammingBoard {
     private DcMotorEx flywheelMotor1;
     private DcMotorEx flywheelMotor2;
     private MotorWrapper[] motors;
+    private MotorWrapper[] driveMotors;
     private Pose2D currentPose;
     private GoBildaPinpointDriver odoPod;
 
@@ -88,6 +93,7 @@ public class LM2Board implements ProgrammingBoard {
         brMotor = new MotorWrapper(hwMap.get(DcMotor.class, "br_motor"));
 
         motors = new MotorWrapper[] {intakeMotor, passthroughMotor, flMotor, frMotor, blMotor, brMotor};
+        driveMotors = new MotorWrapper[] {flMotor, frMotor, blMotor, brMotor};
         passthroughMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         flMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -197,6 +203,16 @@ public class LM2Board implements ProgrammingBoard {
     public void flipKillSwitch() {
         for (MotorWrapper motor : motors) {
             motor.killSwitch = !motor.killSwitch;
+        }
+    }
+    public void flipDriveKillSwitch() {
+        for (MotorWrapper motor : driveMotors) {
+            motor.killSwitch = !motor.killSwitch;
+        }
+    }
+    public void setDriveKillSwitch(boolean killSwitch) {
+        for (MotorWrapper motor : driveMotors) {
+            motor.killSwitch = killSwitch;
         }
     }
 }

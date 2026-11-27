@@ -20,14 +20,14 @@ public class CSVWebServer extends NanoHTTPD {
     @Override
     public Response serve(IHTTPSession session) {
         if(!CSV.exists()) {
-            return newFixedLengthResponse(Response.Status.NOT_FOUND, "test/plain",
+            return newFixedLengthResponse(Response.Status.NOT_FOUND, "text/plain",
                     "Dumbass tried to download a csv with no tuning data lmaoooooooooooooooooo");
         }
         try {
             FileInputStream FIS = new FileInputStream(CSV);
             Response response = newChunkedResponse(Response.Status.OK,"text/csv", FIS);
 
-            response.addHeader("Content-Disposition", "attachment; filename=\"???\"");
+            response.addHeader("Content-Disposition", "attachment; filename=\"shots.csv\"");
             return response;
         } catch (IOException e) {
             return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "text/plain", e.getMessage());

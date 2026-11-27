@@ -12,6 +12,10 @@ import org.firstinspires.ftc.teamcode.drivercontrol.RegressionTuneControl;
 import org.firstinspires.ftc.teamcode.drivercontrol.TuneControl;
 import org.firstinspires.ftc.teamcode.mechanisms.LM2Board;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.utils.CSVWebServer;
+
+import java.io.File;
+import java.io.IOException;
 
 @TeleOp
 public class RegressionTunerTeleOp extends OpMode {
@@ -22,12 +26,14 @@ public class RegressionTunerTeleOp extends OpMode {
     /**
      * The driver control logic fed the programming board
      */
-    DriverControl<LM2Board, OpMode> driverControl;
+    RegressionTuneControl driverControl;
     public Follower follower;
+    public Pose targetPose = new Pose(74, 74);
 
     @Override
     public void init() {
         follower = Constants.create(hardwareMap);
+        follower.setPose(new Pose(10,10,Math.PI));
         board = new LM2Board();
         board.init(hardwareMap);
         //this is just bare-bones driver control, so no states needed.
@@ -44,9 +50,14 @@ public class RegressionTunerTeleOp extends OpMode {
         driverControl.loop();
 
         board.writeLoop();
+        follower.update();
+
         Pose pedroPose = follower.pose();
         telemetry.addData("X", pedroPose.x());
         telemetry.addData("Y", pedroPose.y());
     }
-
+    @Override
+    public void stop() {
+        driverControl.stop();
+    }
 }

@@ -13,11 +13,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.mechanisms.LM2Board;
+import org.firstinspires.ftc.teamcode.opmodes.teleop.TuneTeleOp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TuneControl extends DriverControl<LM2Board, OpMode>{
+public class TuneControl extends DriverControl<LM2Board, TuneTeleOp>{
     private ElapsedTime matchTimer;
     ArrayList<Double> xList = new ArrayList<>();
     ArrayList<Double> yList = new ArrayList<>();
@@ -39,7 +40,7 @@ public class TuneControl extends DriverControl<LM2Board, OpMode>{
     private double errorSum = 0.0;
     private static final double WINDOW_SECONDS = 5.0;
 
-    public void init(Telemetry telemetry, LM2Board board, OpMode opMode, Gamepad gamepad1, Gamepad gamepad2) {
+    public void init(Telemetry telemetry, LM2Board board, TuneTeleOp opMode, Gamepad gamepad1, Gamepad gamepad2) {
         this.board = board;
         this.gamepad1 = gamepad1;
         this.gamepad2 = gamepad2;
