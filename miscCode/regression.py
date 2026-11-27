@@ -1,11 +1,18 @@
+import numpy as np
 import pandas as pd
-from scipy.stats import linregress
+import time
+from pathlib import Path
 
-data_frame = pd.read_csv("data/data.csv")
+start = time.perf_counter()
+data_frame = pd.read_csv(Path(__file__).parent / "data" / "data.csv")
 
-x = df.iloc[:,2] # column 3
+x = data_frame.iloc[:,2] # column 3
 
 for i in (0,1): #Columns 1 and 2
     y = data_frame.iloc[:,i]
-    regression = linregress(x,y)
-    print(data_frame.columns[i], f"Slope: {regression.slope}", f"Intercept: {regression.intercept}", f"R^2 {regression.rvalue**2}")
+    slope, intercept = np.polyfit(x,y,1)
+    r_squared = np.corrcoef(x,y)[0,1] ** 2
+    print(data_frame.columns[i], f"Slope: {slope}", f"Intercept: {intercept}", f"R^2 {r_squared}")
+
+end = time.perf_counter()
+print(f"Elapsed time: {end - start:.4f} seconds")
