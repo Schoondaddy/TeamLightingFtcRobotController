@@ -28,12 +28,12 @@ public class RegressionTunerTeleOp extends OpMode {
      */
     RegressionTuneControl driverControl;
     public Follower follower;
-    public Pose targetPose = new Pose(74, 74);
+    public Pose targetPose = new Pose(0, 12);
 
     @Override
     public void init() {
         follower = Constants.create(hardwareMap);
-        follower.setPose(new Pose(10,10,Math.PI));
+        follower.setPose(new Pose(0,0,90));
         board = new LM2Board();
         board.init(hardwareMap);
         //this is just bare-bones driver control, so no states needed.

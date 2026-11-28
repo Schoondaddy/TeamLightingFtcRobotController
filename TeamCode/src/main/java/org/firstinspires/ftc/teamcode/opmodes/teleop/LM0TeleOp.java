@@ -24,6 +24,8 @@ public class LM0TeleOp extends OpMode {
     public ElapsedTime matchTimer;
     public Follower follower;
     public double deadLine = 1.5;
+    private Pose startPose = new Pose(0, 0, 90);
+    public Pose blueHivePose = new Pose(0, 10);
     @Override
     public void init() {
         follower = Constants.create(hardwareMap);
@@ -32,7 +34,7 @@ public class LM0TeleOp extends OpMode {
         matchTimer = new ElapsedTime();
         dc = new LM2Control();
         dc.init(telemetry, board, this, gamepad1, gamepad2);
-
+        follower.setPose(startPose);
 
     }
 

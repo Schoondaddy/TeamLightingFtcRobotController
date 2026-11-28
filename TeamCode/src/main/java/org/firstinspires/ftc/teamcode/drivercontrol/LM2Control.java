@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.drivercontrol.ControlUtils.quadrati
 
 import androidx.annotation.NonNull;
 
+import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -32,6 +33,10 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
     /** Toggles Slow Mode */
     private StateMachine<LM2Board, LM0TeleOp> intakePassthroughStateMachine;
     public HashMap<IntakePassthrough, Class<? extends IntakePassthroughState>> IPStatesMap;
+    private double HACoeff = 11.497831009652558;
+    private double HAIntercept = 2488.6162215157005;
+    private double FWCoeff = 0.016474118416039418;
+    private double FWIntercept = 0.426383773573809;
     private boolean killSwitch;
     /** The amount of time (nanoseconds) the touchpad needs to be held in order to flip the kill switch*/
     private double killSwitchHoldTime;
@@ -49,6 +54,12 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
     private boolean wasHolding = false;
     private Pose lockedPose;
     public ElapsedTime matchTimer;
+    private Pose targetPose;
+    private double targetX;
+    private double targetY;
+    private Pose currentPose;
+    private Follower follower;
+    private Pose aimPose;
     @Override
     public void init(Telemetry telemetry, LM2Board board, LM0TeleOp opMode, Gamepad gamepad1, Gamepad gamepad2) {
         this.board = board;
@@ -75,6 +86,9 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
         matchTimer = new ElapsedTime();
         flywheelVelocity = 2500.0;
         fieldCentric = true;
+        targetPose = opMode.blueHivePose;
+        targetX = targetPose.x();
+        targetY = targetPose.y();
     }
 
     @Override
@@ -85,10 +99,12 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
         board.setAimServoPosition(0.5);
         board.setFlywheelMotor1Vel(flywheelVelocity);
         board.setFlywheelMotor2Vel(flywheelVelocity);
+        follower = opMode.follower;
     }
 
     @Override
     public void loop() {
+        currentPose = follower.pose();
         currentVoltage = board.getCachedVoltage();
 
         handleDrivetrain();
@@ -138,8 +154,15 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
             }
 
             if (gamepad1.xWasPressed()) {
+                double angleToTarget = Math.atan2(targetY - currentPose.y(), targetX - currentPose.x());
+                aimPose = new Pose(currentPose.x(), currentPose.y(), angleToTarget);
                 board.retractBlocker();
                 pedroBreak = true;
+                double dist = aimPose.distance(targetPose);
+                board.setAimServoPosition(dist * HACoeff + HAIntercept);
+                flywheelVelocity = dist * FWCoeff + FWIntercept;
+                board.setFlywheelMotor1Vel(flywheelVelocity);
+                board.setFlywheelMotor2Vel(flywheelVelocity);
             } else if (gamepad1.xWasReleased()) {
                 board.deployBlocker();
                 pedroBreak = false;
@@ -174,17 +197,12 @@ public class LM2Control extends DriverControl<LM2Board, LM0TeleOp> {
     private void handleDrivetrain() {
         opMode.follower.update();
         if (pedroBreak) {
-            if (!wasHolding) {
-                lockedPose = opMode.follower.pose();
-            }
-            wasHolding = true;
-            opMode.follower.hold(lockedPose);
+            opMode.follower.hold(aimPose);
             return;
         } else {
             if (wasHolding) {
                 opMode.follower.stop();
             }
-            wasHolding = false;
         }
         telemetry.addData("Follower mode: ", opMode.follower.mode());
         
